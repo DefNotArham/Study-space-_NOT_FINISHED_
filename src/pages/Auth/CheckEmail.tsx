@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { MailIcon } from "../components/icons/icons";
-import Logo from "../components/icons/logo";
-import LoFiBackground from "../components/background";
+import { MailIcon } from "../../components/icons/icons";
+import Logo from "../../components/icons/logo";
+import LoFiBackground from "../../components/background";
 
 /**
  * Design-only. If the app navigates here with `state: { email }` (e.g. from

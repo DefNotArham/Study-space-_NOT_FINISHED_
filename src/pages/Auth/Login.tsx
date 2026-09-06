@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { MailIcon, LockIcon } from "../components/icons/icons";
+import { MailIcon, LockIcon } from "../../components/icons/icons";
 
-import Logo from "../components/icons/logo";
-import LoFiBackground from "../components/background";
+import Logo from "../../components/icons/logo";
+import LoFiBackground from "../../components/background";
 
-import Input from "../components/auth/AuthInput";
-import AuthButton from "../components/auth/AuthButton";
+import Input from "../../components/auth/AuthInput";
+import AuthButton from "../../components/auth/AuthButton";
 
 export default function Login() {
   // Design-only, local state — no validation or submission.
