@@ -7,6 +7,9 @@ type ProtectedRouteProps = {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const user = useAuthStore((state) => state.user);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
+
+  if (!isInitialized) return null;
 
   if (!user) {
     return <Navigate to="/login" replace />;

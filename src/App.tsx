@@ -1,14 +1,30 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Auth/Login";
-import Register from "./pages/Auth/Register";
-import CheckEmail from "./pages/Auth/CheckEmail";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import CheckEmail from "./pages/auth/CheckEmail";
 import HomePage from "./pages/HomePage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { useEffect } from "react";
+import { useAuthStore } from "./stores/auth.store";
 
 export default function App() {
+  const initializeAuth = useAuthStore((state) => state.initializeAuth);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/check-email" element={<CheckEmail />} />

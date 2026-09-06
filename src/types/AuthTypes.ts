@@ -2,9 +2,12 @@ import type { User } from "@supabase/supabase-js";
 
 export type AuthStore = {
   user: User | null;
+  isInitialized: boolean;
 
   registerError: string | null;
   loginError: string | null;
+
+  initializeAuth: () => Promise<void>;
 
   register: (
     email: string,

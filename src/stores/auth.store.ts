@@ -9,6 +9,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
   registerError: null,
   loginError: null,
 
+  isInitialized: false,
+
+  initializeAuth: async () => {
+    const { data } = await supabase.auth.getSession();
+
+    set({
+      user: data.session?.user ?? null,
+      isInitialized: true,
+    });
+  },
+
   register: async (
     email: string,
     username: string,
