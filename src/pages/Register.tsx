@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MailIcon, LockIcon, UserIcon } from "../components/icons/icons";
 
 import Logo from "../components/icons/logo";
@@ -20,9 +20,12 @@ export default function Register() {
   const register = useAuthStore((state) => state.register);
   const registerError = useAuthStore((state) => state.registerError);
 
+  const navigate = useNavigate();
+
   const handleRegister = async () => {
     try {
       await register(email, name, password, confirmPassword);
+      navigate("/check-email");
     } catch (error) {
       console.log(error);
     }
