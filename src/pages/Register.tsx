@@ -20,6 +20,14 @@ export default function Register() {
   const register = useAuthStore((state) => state.register);
   const registerError = useAuthStore((state) => state.registerError);
 
+  const handleRegister = async () => {
+    try {
+      await register(email, name, password, confirmPassword);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#120C09] px-6 py-10"
@@ -38,10 +46,10 @@ export default function Register() {
         <div className="rounded-2xl border border-[#3A2C22]/70 bg-[#1D1611]/85 p-7 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65)] backdrop-blur-sm">
           <form
             className="space-y-4"
-            onSubmit={async (e) => {
+            onSubmit={(e) => {
               e.preventDefault();
 
-              await register(email, name, password, confirmPassword);
+              handleRegister();
             }}
           >
             <Input

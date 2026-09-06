@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       password,
       options: {
         data: {
-          username,
+          display_name: username,
         },
       },
     });
