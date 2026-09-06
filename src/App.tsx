@@ -57,14 +57,7 @@ export default function App() {
           }
         />
 
-        <Route
-          path="/email-confirmed"
-          element={
-            <PublicRoute>
-              <EmailConfirmed />
-            </PublicRoute>
-          }
-        />
+        <Route path="/email-confirmed" element={<EmailConfirmed />} />
       </Routes>
     </BrowserRouter>
   );
