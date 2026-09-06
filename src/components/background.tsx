@@ -97,9 +97,6 @@ export default function LoFiBackground() {
           fill="url(#ss-lamp-glow-register)"
         />
 
-        <rect x="0" y="300" width="400" height="14" fill="#0D0906" />
-        <rect x="0" y="314" width="400" height="86" fill="#0A0705" />
-
         <rect x="40" y="272" width="90" height="16" rx="3" fill="#3A2C22" />
         <rect x="50" y="256" width="70" height="16" rx="3" fill="#2E2117" />
         <rect x="46" y="240" width="78" height="16" rx="3" fill="#3A2C22" />

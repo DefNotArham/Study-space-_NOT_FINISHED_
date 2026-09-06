@@ -18,6 +18,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (password !== confirmPassword) {
       set({ registerError: "Passwords do not match" });
+
+      setTimeout(() => {
+        set({ registerError: null });
+      }, 3000);
+
       throw new Error("Passwords do not match");
     }
 
@@ -33,13 +38,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (error) {
       set({ registerError: error.message });
+
+      setTimeout(() => {
+        set({ registerError: null });
+      }, 2000);
+
       throw error;
     }
 
     set({ user: data.user });
-
-    setTimeout(() => {
-      set({ registerError: null });
-    }, 3000);
   },
 }));
