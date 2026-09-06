@@ -27,7 +27,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       throw new Error("Passwords do not match");
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
