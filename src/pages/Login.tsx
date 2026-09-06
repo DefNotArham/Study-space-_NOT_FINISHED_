@@ -8,9 +8,6 @@ import LoFiBackground from "../components/background";
 
 import Input from "../components/auth/AuthInput";
 import AuthButton from "../components/auth/AuthButton";
-/* ------------------------------------------------------------------ */
-/*  Login page                                                          */
-/* ------------------------------------------------------------------ */
 
 export default function Login() {
   // Design-only, local state — no validation or submission.
