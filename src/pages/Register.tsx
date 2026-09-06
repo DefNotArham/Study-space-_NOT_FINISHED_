@@ -8,12 +8,17 @@ import LoFiBackground from "../components/background";
 import Input from "../components/auth/AuthInput";
 import AuthButton from "../components/auth/AuthButton";
 
+import { useAuthStore } from "../stores/auth.store";
+
 export default function Register() {
   // Design-only, local state — no validation or submission.
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const register = useAuthStore((state) => state.register);
+  const registerError = useAuthStore((state) => state.registerError);
 
   return (
     <div
@@ -33,8 +38,10 @@ export default function Register() {
         <div className="rounded-2xl border border-[#3A2C22]/70 bg-[#1D1611]/85 p-7 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65)] backdrop-blur-sm">
           <form
             className="space-y-4"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
+
+              await register(email, name, password, confirmPassword);
             }}
           >
             <Input

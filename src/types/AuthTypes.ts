@@ -9,5 +9,6 @@ export type AuthStore = {
     email: string,
     username: string,
     password: string,
+    confirmPassword: string,
   ) => Promise<void>;
 };

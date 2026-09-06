@@ -8,7 +8,19 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   registerError: null,
 
-  register: async (email: string, username: string, password: string) => {
+  register: async (
+    email: string,
+    username: string,
+    password: string,
+    confirmPassword: string,
+  ) => {
+    set({ registerError: null });
+
+    if (password !== confirmPassword) {
+      set({ registerError: "Passwords do not match" });
+      throw new Error("Passwords do not match");
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -20,9 +32,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
     });
 
     if (error) {
+      set({ registerError: error.message });
       throw error;
     }
 
     set({ user: data.user });
+
+    setTimeout(() => {
+      set({ registerError: null });
+    }, 3000);
   },
 }));
