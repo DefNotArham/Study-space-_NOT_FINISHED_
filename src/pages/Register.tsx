@@ -366,7 +366,7 @@ export default function Register() {
               id="register-name"
               label="Name"
               type="text"
-              placeholder="Ada Lovelace"
+              placeholder="Arham Kabir"
               icon={<UserIcon className="h-[18px] w-[18px]" />}
               value={name}
               onChange={setName}
