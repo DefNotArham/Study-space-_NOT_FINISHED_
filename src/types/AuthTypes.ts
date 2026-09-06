@@ -4,6 +4,7 @@ export type AuthStore = {
   user: User | null;
 
   registerError: string | null;
+  loginError: string | null;
 
   register: (
     email: string,
@@ -11,4 +12,6 @@ export type AuthStore = {
     password: string,
     confirmPassword: string,
   ) => Promise<void>;
+
+  login: (email: string, password: string) => Promise<void>;
 };

@@ -7,6 +7,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
 
   registerError: null,
+  loginError: null,
 
   register: async (
     email: string,
@@ -41,6 +42,25 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       setTimeout(() => {
         set({ registerError: null });
+      }, 2000);
+
+      throw error;
+    }
+  },
+
+  login: async (email: string, password: string) => {
+    set({ loginError: null });
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      set({ loginError: error.message });
+
+      setTimeout(() => {
+        set({ loginError: null });
       }, 2000);
 
       throw error;
