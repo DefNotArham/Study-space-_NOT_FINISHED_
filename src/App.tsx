@@ -3,8 +3,12 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import CheckEmail from "./pages/auth/CheckEmail";
 import HomePage from "./pages/HomePage";
+
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import PublicRoute from "./components/auth/PublicRoute";
+
 import { useEffect } from "react";
+
 import { useAuthStore } from "./stores/auth.store";
 
 export default function App() {
@@ -25,9 +29,32 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/check-email" element={<CheckEmail />} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/check-email"
+          element={
+            <PublicRoute>
+              <CheckEmail />
+            </PublicRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
