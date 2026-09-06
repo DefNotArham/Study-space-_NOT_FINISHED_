@@ -5,7 +5,7 @@ import { MailIcon, LockIcon, UserIcon } from "../components/icons/icons";
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 
-import Input from "../components/auth/RegisterInput";
+import Input from "../components/auth/AuthInput";
 import AuthButton from "../components/auth/AuthButton";
 
 export default function Register() {
