@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import CheckEmail from "./pages/auth/CheckEmail";
 import HomePage from "./pages/HomePage";
+import EmailConfirmed from "./pages/auth/EmailConfirmed";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -52,6 +53,15 @@ export default function App() {
           element={
             <PublicRoute>
               <CheckEmail />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/email-confirmed"
+          element={
+            <PublicRoute>
+              <EmailConfirmed />
             </PublicRoute>
           }
         />

@@ -42,6 +42,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       email,
       password,
       options: {
+        emailRedirectTo: "http://localhost:5173/email-confirmed",
         data: {
           display_name: username,
         },
