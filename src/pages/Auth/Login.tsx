@@ -21,8 +21,12 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    await login(email, password);
-    navigate("/");
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
