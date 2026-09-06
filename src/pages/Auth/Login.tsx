@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { MailIcon, LockIcon } from "../../components/icons/icons";
 
@@ -8,11 +8,22 @@ import LoFiBackground from "../../components/background";
 
 import Input from "../../components/auth/AuthInput";
 import AuthButton from "../../components/auth/AuthButton";
+import { useAuthStore } from "../../stores/auth.store";
 
 export default function Login() {
   // Design-only, local state — no validation or submission.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const login = useAuthStore((state) => state.login);
+  const loginError = useAuthStore((state) => state.loginError);
+
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    await login(email, password);
+    navigate("/");
+  };
 
   return (
     <div
@@ -34,6 +45,7 @@ export default function Login() {
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
+              handleLogin();
             }}
           >
             <Input
@@ -65,6 +77,19 @@ export default function Login() {
                 Forgot password?
               </button>
             </div>
+
+            {loginError && (
+              <div
+                role="alert"
+                className="flex items-center gap-2 rounded-xl border border-red-400/20 bg-red-400/10 px-3.5 py-3 text-[13px] text-red-300"
+              >
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-red-300/30 text-[11px]">
+                  !
+                </span>
+
+                <span>{loginError}</span>
+              </div>
+            )}
 
             <AuthButton type="submit">Sign in</AuthButton>
 
