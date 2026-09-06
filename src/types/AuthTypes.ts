@@ -1,10 +1,13 @@
-export type User = {
-  username: string;
-  email: string;
-  password: string;
-};
+import type { User } from "@supabase/supabase-js";
 
 export type AuthStore = {
   user: User | null;
-  setUser: (user: User | null) => void;
+
+  registerError: string | null;
+
+  register: (
+    email: string,
+    username: string,
+    password: string,
+  ) => Promise<void>;
 };
