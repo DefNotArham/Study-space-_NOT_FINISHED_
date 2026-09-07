@@ -10,6 +10,8 @@ export type AuthStore = {
   loginError: string | null;
   loginLoading: boolean;
 
+  logoutLoading: boolean;
+
   initializeAuth: () => Promise<void>;
 
   register: (
