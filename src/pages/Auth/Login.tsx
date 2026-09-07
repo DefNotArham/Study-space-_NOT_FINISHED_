@@ -99,7 +99,7 @@ export default function Login() {
             )}
 
             <AuthButton type="submit">
-              {loginLoading ? <LoadingSpinner /> : "Sign in"}
+              {loginLoading ? <LoadingSpinner size="sm" /> : "Sign in"}
             </AuthButton>
 
             <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">

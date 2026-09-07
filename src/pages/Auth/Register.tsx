@@ -112,7 +112,11 @@ export default function Register() {
             )}
 
             <AuthButton type="submit">
-              {registerLoading ? <LoadingSpinner /> : "Create account"}
+              {registerLoading ? (
+                <LoadingSpinner size="sm" />
+              ) : (
+                "Create account"
+              )}
             </AuthButton>
 
             <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">
