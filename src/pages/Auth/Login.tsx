@@ -8,6 +8,8 @@ import LoFiBackground from "../../components/background";
 
 import Input from "../../components/auth/AuthInput";
 import AuthButton from "../../components/auth/AuthButton";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+
 import { useAuthStore } from "../../stores/auth.store";
 
 export default function Login() {
@@ -17,6 +19,7 @@ export default function Login() {
 
   const login = useAuthStore((state) => state.login);
   const loginError = useAuthStore((state) => state.loginError);
+  const loginLoading = useAuthStore((state) => state.loginLoading);
 
   const navigate = useNavigate();
 
@@ -95,7 +98,9 @@ export default function Login() {
               </div>
             )}
 
-            <AuthButton type="submit">Sign in</AuthButton>
+            <AuthButton type="submit">
+              {loginLoading ? <LoadingSpinner /> : "Sign in"}
+            </AuthButton>
 
             <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">
               Don&apos;t have an account?{" "}

@@ -9,6 +9,7 @@ import Input from "../../components/auth/AuthInput";
 import AuthButton from "../../components/auth/AuthButton";
 
 import { useAuthStore } from "../../stores/auth.store";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 export default function Register() {
   // Design-only, local state — no validation or submission.
@@ -19,6 +20,7 @@ export default function Register() {
 
   const register = useAuthStore((state) => state.register);
   const registerError = useAuthStore((state) => state.registerError);
+  const registerLoading = useAuthStore((state) => state.registerLoading);
 
   const navigate = useNavigate();
 
@@ -109,7 +111,9 @@ export default function Register() {
               </div>
             )}
 
-            <AuthButton type="submit">Create account</AuthButton>
+            <AuthButton type="submit">
+              {registerLoading ? <LoadingSpinner /> : "Create account"}
+            </AuthButton>
 
             <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">
               Already have an account?{" "}
