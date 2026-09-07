@@ -20,4 +20,6 @@ export type AuthStore = {
   ) => Promise<void>;
 
   login: (email: string, password: string) => Promise<void>;
+
+  logout: () => Promise<void>;
 };
