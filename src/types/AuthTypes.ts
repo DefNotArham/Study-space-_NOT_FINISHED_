@@ -5,7 +5,10 @@ export type AuthStore = {
   isInitialized: boolean;
 
   registerError: string | null;
+  registerLoading: boolean;
+
   loginError: string | null;
+  loginLoading: boolean;
 
   initializeAuth: () => Promise<void>;
 

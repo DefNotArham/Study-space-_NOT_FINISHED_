@@ -6,8 +6,13 @@ import { supabase } from "../lib/supabase";
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
 
+  // Register
   registerError: null,
+  registerLoading: false,
+
+  // Login
   loginError: null,
+  loginLoading: false,
 
   isInitialized: false,
 
@@ -26,10 +31,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
     password: string,
     confirmPassword: string,
   ) => {
-    set({ registerError: null });
+    set({ registerError: null, registerLoading: true });
 
     if (password !== confirmPassword) {
-      set({ registerError: "Passwords do not match" });
+      set({ registerError: "Passwords do not match", registerLoading: false });
 
       setTimeout(() => {
         set({ registerError: null });
@@ -50,7 +55,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     });
 
     if (error) {
-      set({ registerError: error.message });
+      set({ registerError: error.message, registerLoading: false });
 
       setTimeout(() => {
         set({ registerError: null });
@@ -58,10 +63,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       throw error;
     }
+
+    set({ registerLoading: false });
   },
 
   login: async (email: string, password: string) => {
-    set({ loginError: null });
+    set({ loginError: null, loginLoading: true });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -69,7 +76,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     });
 
     if (error) {
-      set({ loginError: error.message });
+      set({ loginError: error.message, loginLoading: false });
 
       setTimeout(() => {
         set({ loginError: null });
@@ -78,6 +85,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
       throw error;
     }
 
-    set({ user: data.user });
+    set({ user: data.user, loginLoading: false });
   },
 }));
