@@ -2,8 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import CheckEmail from "./pages/auth/CheckEmail";
-import HomePage from "./pages/HomePage";
 import EmailConfirmed from "./pages/auth/EmailConfirmed";
+
+import HomePage from "./pages/HomePage";
+import TasksPage from "./pages/TasksPage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -22,6 +24,33 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        // Auth pages
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/check-email"
+          element={
+            <PublicRoute>
+              <CheckEmail />
+            </PublicRoute>
+          }
+        />
+        <Route path="/email-confirmed" element={<EmailConfirmed />} />
+        //
         <Route
           path="/"
           element={
@@ -31,33 +60,13 @@ export default function App() {
           }
         />
         <Route
-          path="/login"
+          path="/tasks"
           element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
+            <ProtectedRoute>
+              <TasksPage />
+            </ProtectedRoute>
           }
         />
-
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/check-email"
-          element={
-            <PublicRoute>
-              <CheckEmail />
-            </PublicRoute>
-          }
-        />
-
-        <Route path="/email-confirmed" element={<EmailConfirmed />} />
       </Routes>
     </BrowserRouter>
   );
