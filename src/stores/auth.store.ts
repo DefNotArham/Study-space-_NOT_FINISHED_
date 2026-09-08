@@ -19,6 +19,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   isInitialized: false,
 
+  // forgotPassword
+  forgotPasswordLoading: false,
+  forgotPasswordError: null,
+
   initializeAuth: async () => {
     const { data } = await supabase.auth.getSession();
 
@@ -101,5 +105,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
 
     set({ user: null, logoutLoading: false });
+  },
+
+  forgotPassword: async (email: string) => {
+    set({ forgotPasswordLoading: true });
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://localhost:5173/reset-password",
+    });
+
+    if (error) {
+      set({ forgotPasswordError: error.message, forgotPasswordLoading: false });
+
+      throw error;
+    }
+
+    set({ forgotPasswordLoading: false });
   },
 }));

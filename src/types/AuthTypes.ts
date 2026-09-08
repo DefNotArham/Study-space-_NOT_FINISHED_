@@ -12,6 +12,9 @@ export type AuthStore = {
 
   logoutLoading: boolean;
 
+  forgotPasswordLoading: boolean;
+  forgotPasswordError: string | null;
+
   initializeAuth: () => Promise<void>;
 
   register: (
@@ -24,4 +27,6 @@ export type AuthStore = {
   login: (email: string, password: string) => Promise<void>;
 
   logout: () => Promise<void>;
+
+  forgotPassword: (email: string) => Promise<void>;
 };
