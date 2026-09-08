@@ -78,6 +78,9 @@ export default function Login() {
 
             <div className="-mt-1 flex justify-end">
               <button
+                onClick={() => {
+                  navigate("/forgot-password");
+                }}
                 type="button"
                 className="text-[12.5px] text-[#8A7B6C] transition-colors duration-200 hover:text-[#E3A567] cursor-pointer"
               >
