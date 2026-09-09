@@ -7,6 +7,8 @@ import Logo from "../../components/icons/logo";
 import LoFiBackground from "../../components/background";
 import { useAuthStore } from "../../stores/auth.store";
 
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -156,9 +158,13 @@ export default function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={forgotPasswordLoading}
-                  className="flex w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[15px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 active:shadow-[0_4px_12px_-4px_rgba(201,125,74,0.5)] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[15px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 active:shadow-[0_4px_12px_-4px_rgba(201,125,74,0.5)] disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
                 >
-                  {forgotPasswordLoading ? "Sending..." : "Send reset link"}
+                  {forgotPasswordLoading ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    "Send reset link"
+                  )}
                 </button>
 
                 <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">

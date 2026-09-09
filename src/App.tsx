@@ -4,7 +4,8 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import CheckEmail from "./pages/auth/CheckEmail";
 import EmailConfirmed from "./pages/auth/EmailConfirmed";
-import ForgotPassword from "./pages/auth/ForgotPasswordPage";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 import HomePage from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
@@ -56,6 +57,14 @@ export default function App() {
           element={
             <PublicRoute>
               <ForgotPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <PublicRoute>
+              <ResetPassword />
             </PublicRoute>
           }
         />
