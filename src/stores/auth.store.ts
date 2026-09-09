@@ -127,8 +127,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ forgotPasswordLoading: false });
   },
 
-  resetPassword: async (newPassword: string) => {
+  resetPassword: async (newPassword: string, confirmNewPassword: string) => {
     set({ resetPasswordLoading: true });
+
+    if (newPassword !== confirmNewPassword) {
+      set({ resetPasswordError: "Passwords does not match" });
+      throw new Error("Passwords does not match");
+    }
 
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
