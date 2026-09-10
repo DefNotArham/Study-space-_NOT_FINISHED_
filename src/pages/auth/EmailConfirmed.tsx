@@ -5,10 +5,6 @@ import { CheckIcon } from "../../components/icons/icons";
 import Logo from "../../components/icons/logo";
 import LoFiBackground from "../../components/background";
 
-/**
- * Design-only. No Supabase / confirmation logic — the "Continue to Login"
- * button just navigates to /login.
- */
 export default function EmailConfirmed() {
   const navigate = useNavigate();
 
