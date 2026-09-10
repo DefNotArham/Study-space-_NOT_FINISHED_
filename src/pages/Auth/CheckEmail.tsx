@@ -5,12 +5,6 @@ import { MailIcon } from "../../components/icons/icons";
 import Logo from "../../components/icons/logo";
 import LoFiBackground from "../../components/background";
 
-/**
- * Design-only. If the app navigates here with `state: { email }` (e.g. from
- * a real Register submission later), that address is shown; otherwise a
- * neutral fallback is used. The "Resend email" button only mocks a brief
- * confirmation state — there is no real send.
- */
 export default function CheckEmail() {
   const location = useLocation();
   const email = (location.state as { email?: string } | null)?.email;

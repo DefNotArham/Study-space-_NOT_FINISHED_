@@ -105,6 +105,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (error) {
       set({ logoutLoading: false });
+
       throw error;
     }
 
@@ -120,6 +121,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (error) {
       set({ forgotPasswordError: error.message, forgotPasswordLoading: false });
+
+      setTimeout(() => {
+        set({ forgotPasswordError: null });
+      }, 2000);
 
       throw error;
     }
@@ -142,6 +147,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (error) {
       set({ resetPasswordError: error.message, resetPasswordLoading: false });
+
+      setTimeout(() => {
+        set({ registerError: null });
+      }, 2000);
+
       throw error;
     }
   },

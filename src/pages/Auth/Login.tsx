@@ -13,7 +13,6 @@ import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useAuthStore } from "../../stores/auth.store";
 
 export default function Login() {
-  // Design-only, local state — no validation or submission.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

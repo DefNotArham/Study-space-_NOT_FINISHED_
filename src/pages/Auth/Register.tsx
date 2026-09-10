@@ -12,7 +12,6 @@ import { useAuthStore } from "../../stores/auth.store";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 export default function Register() {
-  // Design-only, local state — no validation or submission.
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

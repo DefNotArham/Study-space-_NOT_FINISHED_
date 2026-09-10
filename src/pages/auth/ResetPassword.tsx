@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { LockIcon, EyeIcon } from "../../components/icons/icons";
 
@@ -21,6 +21,8 @@ function PasswordField({
   autoComplete,
   onChange,
 }: PasswordFieldProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div>
       <label
@@ -37,7 +39,7 @@ function PasswordField({
 
         <input
           id={id}
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="••••••••"
           autoComplete={autoComplete}
           onChange={onChange}
@@ -47,8 +49,9 @@ function PasswordField({
         <button
           type="button"
           tabIndex={-1}
+          onClick={() => setShowPassword((prev) => !prev)}
           className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8A7B6C] transition-colors duration-200 hover:text-[#E3A567]"
-          aria-label="Show password"
+          aria-label={showPassword ? "Hide password" : "Show password"}
         >
           <EyeIcon className="h-[18px] w-[18px]" />
         </button>
@@ -67,11 +70,14 @@ export default function ResetPassword() {
     (state) => state.resetPasswordLoading,
   );
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       await resetPassword(newPassword, confirmPassword);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
