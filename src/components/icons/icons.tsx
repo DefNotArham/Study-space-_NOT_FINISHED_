@@ -161,3 +161,56 @@ export function CloseIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function KanbanIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <rect x="4" y="4" width="16" height="16" rx="2.5" />
+      <path d="M9 4v16M15 4v16" />
+      <path d="M6.5 7.5h1M11.5 7.5h1M17 7.5h.5" />
+    </svg>
+  );
+}
+
+export function PomodoroIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="M9.5 4.2c1-.9 2.2-1.3 2.5-1.3s1.5.4 2.5 1.3" />
+      <circle cx="12" cy="13.5" r="7.3" />
+      <path d="M12 9.5v4l2.6 1.6" />
+    </svg>
+  );
+}
+
+export function AnalyticsIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="M4 16.5 9 11l4 4 6.5-7" />
+      <path d="M15 7.5h4.5V12" />
+    </svg>
+  );
+}
+
+export function StudyRoomsIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3.5 20c1-3.4 3.4-5.2 5.5-5.2s4.5 1.8 5.5 5.2" />
+      <circle cx="16.5" cy="8.5" r="2.5" />
+      <path d="M14.7 12.4c.6-.15 1.15-.25 1.8-.25 2.1 0 4.5 1.8 5.5 5.2" />
+    </svg>
+  );
+}
+
+export function SettingsIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+      <circle cx="9" cy="7" r="1.75" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="12" r="1.75" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="17" r="1.75" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
