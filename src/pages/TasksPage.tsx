@@ -345,7 +345,7 @@ function AddTaskModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl border border-[#3A2C22] py-2.5 text-[14px] font-medium text-[#9C8D7E] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#F3E9DC]"
+              className="flex-1 rounded-xl border border-[#3A2C22] py-2.5 text-[14px] font-medium text-[#9C8D7E] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#F3E9DC] cursor-pointer"
             >
               Cancel
             </button>
@@ -454,7 +454,7 @@ export default function TasksPage() {
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#B8A99A] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC]"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#B8A99A] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC] cursor-pointer"
             aria-label="Open menu"
           >
             <MenuIcon className="h-5 w-5" />
@@ -475,7 +475,7 @@ export default function TasksPage() {
                 <button
                   type="button"
                   onClick={() => setMobileNavOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#B8A99A] hover:bg-[#1B140F] hover:text-[#F3E9DC]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#B8A99A] hover:bg-[#1B140F] hover:text-[#F3E9DC] cursor-pointer"
                   aria-label="Close menu"
                 >
                   <CloseIcon className="h-4 w-4" />
@@ -506,7 +506,7 @@ export default function TasksPage() {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer"
               >
                 <PlusIcon className="h-4 w-4" />
                 Add task
@@ -574,7 +574,7 @@ export default function TasksPage() {
                         key={key}
                         type="button"
                         onClick={() => setStatusFilter(key)}
-                        className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium capitalize transition-colors duration-200 ${
+                        className={`rounded-lg px-3 py-1.5 text-[12.5px] font-medium capitalize transition-colors duration-200 cursor-pointer ${
                           statusFilter === key
                             ? "bg-[#2E2117] text-[#F3E9DC]"
                             : "text-[#8A7B6C] hover:text-[#B8A99A]"
@@ -630,7 +630,7 @@ export default function TasksPage() {
                             ? "Mark task as not done"
                             : "Mark task as done"
                         }
-                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors duration-200 ${
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors duration-200 cursor-pointer ${
                           task.completed
                             ? "border-[#E3A567] bg-[#E3A567]"
                             : "border-[#4A392C] bg-transparent hover:border-[#E3A567]/60"
@@ -690,7 +690,7 @@ export default function TasksPage() {
                       <button
                         type="button"
                         aria-label="Task options"
-                        className="shrink-0 rounded-lg p-1.5 text-[#6B5D50] transition-colors duration-200 hover:bg-[#241A14] hover:text-[#B8A99A]"
+                        className="shrink-0 rounded-lg p-1.5 text-[#6B5D50] transition-colors duration-200 hover:bg-[#241A14] hover:text-[#B8A99A] cursor-pointer"
                       >
                         <MoreIcon className="h-4 w-4" />
                       </button>
