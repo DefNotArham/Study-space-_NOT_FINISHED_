@@ -214,3 +214,38 @@ export function SettingsIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function SearchIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <circle cx="10.8" cy="10.8" r="6.3" />
+      <path d="m16 16 4.5 4.5" />
+    </svg>
+  );
+}
+
+export function PlusIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+export function MoreIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="m6.5 9 5.5 5.5L17.5 9" />
+    </svg>
+  );
+}
