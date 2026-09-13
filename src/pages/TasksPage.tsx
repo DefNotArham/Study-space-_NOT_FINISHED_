@@ -1,5 +1,6 @@
 import { useAuthStore } from "../stores/auth.store";
 import { supabase } from "../lib/supabase";
+import { useEffect } from "react";
 
 const TasksPage = () => {
   const user = useAuthStore((state) => state.user);
@@ -14,6 +15,26 @@ const TasksPage = () => {
     console.log(data);
     console.log(error);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", user?.id);
+
+      console.log("USER:", user?.id);
+      console.log("DATA:", data);
+      console.log("ERROR:", error);
+
+      if (data) console.log(data);
+      if (error) console.log(error);
+    };
+
+    fetchData();
+  }, [user]);
 
   return (
     <div className="p-10">
