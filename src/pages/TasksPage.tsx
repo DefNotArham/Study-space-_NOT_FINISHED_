@@ -89,13 +89,6 @@ const TasksPage = () => {
           Add task
         </button>
       </form>
-
-      <button
-        className="cursor-pointer bg-red-500 text-white px-3 py-2 rounded-2xl mt-10"
-        type="submit"
-      >
-        Add tasks
-      </button>
     </div>
   );
 };
