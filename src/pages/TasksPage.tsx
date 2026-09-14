@@ -1,5 +1,5 @@
 import { useAuthStore } from "../stores/auth.store";
-import { supabase } from "../lib/supabase";
+import { useState } from "react";
 import { useEffect } from "react";
 import useTaskStore from "../stores/task.store";
 
@@ -10,23 +10,19 @@ const TasksPage = () => {
   // Tasks
   const Tasks = useTaskStore((state) => state.Tasks);
   const fetchTasks = useTaskStore((state) => state.fetchTasks);
+  const createTask = useTaskStore((state) => state.createTask);
 
-  const createTask = async () => {
-    const { data, error } = await supabase.from("tasks").insert({
-      user_id: user?.id,
-      title: "My first task",
-      priority: "high",
-    });
-
-    console.log(data);
-    console.log(error);
-  };
+  // Inputs
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [subject, setSubject] = useState("");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
 
   useEffect(() => {
     if (!user) return;
 
     fetchTasks(user);
-  }, [user, Tasks]);
+  }, [user]);
 
   return (
     <div className="p-10">
@@ -37,9 +33,66 @@ const TasksPage = () => {
         ))}
       </div>
 
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          if (!user) return;
+
+          createTask({
+            user_id: user.id,
+            title,
+            description,
+            subject,
+            priority,
+          });
+        }}
+        className="flex flex-col gap-3 mt-10"
+      >
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Task title"
+          className="border p-2 rounded"
+        />
+
+        <input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+          className="border p-2 rounded"
+        />
+
+        <input
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="Subject"
+          className="border p-2 rounded"
+        />
+
+        <select
+          value={priority}
+          onChange={(e) =>
+            setPriority(e.target.value as "low" | "medium" | "high")
+          }
+          className="border p-2 rounded"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+
+        <button
+          type="submit"
+          className="cursor-pointer bg-red-500 text-white px-3 py-2 rounded-2xl"
+        >
+          Add task
+        </button>
+      </form>
+
       <button
         className="cursor-pointer bg-red-500 text-white px-3 py-2 rounded-2xl mt-10"
-        onClick={createTask}
+        type="submit"
       >
         Add tasks
       </button>

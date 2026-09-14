@@ -13,6 +13,7 @@ export type Task = {
 };
 
 export type CreateTask = {
+  user_id: string;
   title: string;
   description?: string;
   subject?: string;
