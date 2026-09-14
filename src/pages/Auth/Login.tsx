@@ -16,9 +16,9 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = useAuthStore((state) => state.login);
-  const loginError = useAuthStore((state) => state.loginError);
-  const loginLoading = useAuthStore((state) => state.loginLoading);
+  const login = useAuthStore((s) => s.login);
+  const loginError = useAuthStore((s) => s.loginError);
+  const loginLoading = useAuthStore((s) => s.loginLoading);
 
   const navigate = useNavigate();
 

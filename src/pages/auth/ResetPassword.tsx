@@ -64,11 +64,9 @@ export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const resetPassword = useAuthStore((state) => state.resetPassword);
-  const resetPasswordError = useAuthStore((state) => state.resetPasswordError);
-  const resetPasswordLoading = useAuthStore(
-    (state) => state.resetPasswordLoading,
-  );
+  const resetPassword = useAuthStore((s) => s.resetPassword);
+  const resetPasswordError = useAuthStore((s) => s.resetPasswordError);
+  const resetPasswordLoading = useAuthStore((s) => s.resetPasswordLoading);
 
   const navigate = useNavigate();
 

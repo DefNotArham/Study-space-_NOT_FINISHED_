@@ -17,9 +17,9 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const register = useAuthStore((state) => state.register);
-  const registerError = useAuthStore((state) => state.registerError);
-  const registerLoading = useAuthStore((state) => state.registerLoading);
+  const register = useAuthStore((s) => s.register);
+  const registerError = useAuthStore((s) => s.registerError);
+  const registerLoading = useAuthStore((s) => s.registerLoading);
 
   const navigate = useNavigate();
 

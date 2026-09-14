@@ -13,13 +13,9 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const forgotPassword = useAuthStore((state) => state.forgotPassword);
-  const forgotPasswordLoading = useAuthStore(
-    (state) => state.forgotPasswordLoading,
-  );
-  const forgotPasswordError = useAuthStore(
-    (state) => state.forgotPasswordError,
-  );
+  const forgotPassword = useAuthStore((s) => s.forgotPassword);
+  const forgotPasswordLoading = useAuthStore((s) => s.forgotPasswordLoading);
+  const forgotPasswordError = useAuthStore((s) => s.forgotPasswordError);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

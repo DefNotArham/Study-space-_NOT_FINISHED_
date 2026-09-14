@@ -23,8 +23,7 @@ export default function HomePage() {
     day: "numeric",
   });
 
-  const user = useAuthStore((state) => state.user);
-
+  const user = useAuthStore((s) => s.user);
 
   return (
     <div
