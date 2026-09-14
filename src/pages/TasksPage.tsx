@@ -26,7 +26,7 @@ const TasksPage = () => {
     if (!user) return;
 
     fetchTasks(user);
-  }, [user]);
+  }, [user, Tasks]);
 
   return (
     <div className="p-10">

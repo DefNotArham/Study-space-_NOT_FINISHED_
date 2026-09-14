@@ -12,7 +12,20 @@ export type Task = {
   created_at: string;
 };
 
+export type CreateTask = {
+  title: string;
+  description?: string;
+  subject?: string;
+  priority: "low" | "medium" | "high";
+  due_date?: string;
+};
+
 export type TaskStore = {
   Tasks: Task[];
+
+  createTaskError: string | null;
+  createTaskLoading: boolean;
+
   fetchTasks: (user: User) => Promise<void>;
+  createTask: (task: CreateTask) => Promise<void>;
 };
