@@ -7,6 +7,7 @@ import { PlusIcon, CloseIcon, ChecklistIcon } from "../components/icons/icons";
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const PRIORITY_STYLES: Record<
   "low" | "medium" | "high",
@@ -84,6 +85,30 @@ const TasksPage = () => {
       className="relative min-h-screen bg-[#120C09]"
       style={{ fontFamily: "'Manrope', sans-serif" }}
     >
+      <style>{`
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #120C09;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #6B5543;
+        border-radius: 9999px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #80654D;
+      }
+
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #6B5543 #120C09;
+      }
+    `}</style>
+
       <LoFiBackground />
 
       <div className="relative z-10 flex min-h-screen">
@@ -159,7 +184,11 @@ const TasksPage = () => {
 
             {/* Task list */}
             <Card>
-              {tasks.length === 0 ? (
+              {fetchTasksLoading ? (
+                <div className="flex items-center justify-center px-6 py-16">
+                  <LoadingSpinner text="Loading tasks..." />
+                </div>
+              ) : tasks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
                   <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#2A1F17] ring-1 ring-[#E3A567]/25 shadow-[0_0_24px_-4px_rgba(227,165,103,0.45)]">
                     <ChecklistIcon className="h-7 w-7 text-[#E3A567]" />
