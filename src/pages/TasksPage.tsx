@@ -8,9 +8,10 @@ const TasksPage = () => {
   const user = useAuthStore((state) => state.user);
 
   // Tasks
-  const Tasks = useTaskStore((state) => state.Tasks);
-  const fetchTasks = useTaskStore((state) => state.fetchTasks);
-  const createTask = useTaskStore((state) => state.createTask);
+  const tasks = useTaskStore((s) => s.Tasks);
+  const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const createTask = useTaskStore((s) => s.createTask);
+  const createTaskError = useTaskStore((s) => s.createTaskError);
 
   // Inputs
   const [title, setTitle] = useState("");
@@ -28,7 +29,7 @@ const TasksPage = () => {
     <div className="p-10">
       <h1>Task</h1>
       <div className="flex flex-col">
-        {Tasks.map((task) => (
+        {tasks.map((task) => (
           <div key={task.id}>{task.title} </div>
         ))}
       </div>
@@ -81,6 +82,10 @@ const TasksPage = () => {
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
+
+        {createTaskError && (
+          <p className="text-[13px] text-red-400">{createTaskError}</p>
+        )}
 
         <button
           type="submit"

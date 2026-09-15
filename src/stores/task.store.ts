@@ -13,8 +13,6 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskLoading: false,
 
   fetchTasks: async (user: User) => {
-    set({ createTaskLoading: true });
-
     try {
       if (!user) return;
 
@@ -24,7 +22,6 @@ const useTaskStore = create<TaskStore>((set) => ({
         .eq("user_id", user?.id);
 
       if (error) {
-        set({ createTaskError: error.message, createTaskLoading: false });
         console.log(error);
         return;
       }
@@ -35,15 +32,15 @@ const useTaskStore = create<TaskStore>((set) => ({
       });
     } catch (error) {
       console.log(error);
-      set({
-        createTaskLoading: false,
-        createTaskError:
-          error instanceof Error ? error?.message : "Something went wrong",
-      });
     }
   },
 
   createTask: async (task: CreateTask) => {
+    set({
+      createTaskLoading: true,
+      createTaskError: null,
+    });
+
     try {
       const { data, error } = await supabase
         .from("tasks")
@@ -51,13 +48,26 @@ const useTaskStore = create<TaskStore>((set) => ({
         .select()
         .single();
 
-      if (error) return console.log(error);
+      if (error) {
+        console.log(error);
+        set({
+          createTaskError: error.message,
+          createTaskLoading: false,
+        });
+        return;
+      }
 
       set((state) => ({
         Tasks: [...state.Tasks, data],
+        createTaskLoading: false,
       }));
     } catch (error) {
       console.log(error);
+      set({
+        createTaskLoading: false,
+        createTaskError:
+          error instanceof Error ? error.message : "Something went wrong",
+      });
     }
   },
 }));
