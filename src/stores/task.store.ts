@@ -120,7 +120,31 @@ const useTaskStore = create<TaskStore>((set) => ({
     }
   },
 
-  deleteTask: async (taskId) => {},
+  deleteTask: async (taskId) => {
+    set({
+      deleteTaskLoading: true,
+    });
+
+    try {
+      const { error } = await supabase.from("tasks").delete().eq("id", taskId);
+
+      if (error) {
+        console.log(error);
+        set({ deleteTaskLoading: false });
+        return;
+      }
+
+      set((state) => ({
+        Tasks: state.Tasks.filter((t) => t.id !== taskId),
+        deleteTaskLoading: false,
+      }));
+    } catch (error) {
+      console.log(error);
+      set({
+        deleteTaskLoading: false,
+      });
+    }
+  },
 }));
 
 export default useTaskStore;
