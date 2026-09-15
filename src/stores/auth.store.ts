@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       setTimeout(() => {
         set({ registerError: null });
-      }, 3000);
+      }, 2000);
 
       throw new Error("Passwords do not match");
     }

@@ -40,24 +40,44 @@ const useTaskStore = create<TaskStore>((set) => ({
       createTaskError: null,
     });
 
-    if (!task.user_id)
-      return set({
+    if (!task.user_id) {
+      set({
         createTaskError: "User ID not found",
         createTaskLoading: false,
       });
 
-    if (!task.title.trim())
-      return set({
+      setTimeout(() => {
+        set({ createTaskError: null });
+      }, 2000);
+
+      return;
+    }
+
+    if (!task.title.trim()) {
+      set({
         createTaskError: "Task title is required",
         createTaskLoading: false,
       });
 
-    if (!task.priority)
-      return set({
+      setTimeout(() => {
+        set({ createTaskError: null });
+      }, 2000);
+
+      return;
+    }
+
+    if (!task.priority) {
+      set({
         createTaskError: "Choose a priority",
         createTaskLoading: false,
       });
 
+      setTimeout(() => {
+        set({ createTaskError: null });
+      }, 2000);
+
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from("tasks")
@@ -71,6 +91,10 @@ const useTaskStore = create<TaskStore>((set) => ({
           createTaskError: error.message,
           createTaskLoading: false,
         });
+
+        setTimeout(() => {
+          set({ createTaskError: null });
+        }, 2000);
         return;
       }
 
@@ -85,6 +109,10 @@ const useTaskStore = create<TaskStore>((set) => ({
         createTaskError:
           error instanceof Error ? error.message : "Something went wrong",
       });
+
+      setTimeout(() => {
+        set({ createTaskError: null });
+      }, 2000);
     }
   },
 }));
