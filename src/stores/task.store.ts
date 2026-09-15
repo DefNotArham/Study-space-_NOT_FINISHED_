@@ -28,7 +28,6 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       set({
         Tasks: data,
-        createTaskLoading: false,
       });
     } catch (error) {
       console.log(error);
@@ -40,6 +39,24 @@ const useTaskStore = create<TaskStore>((set) => ({
       createTaskLoading: true,
       createTaskError: null,
     });
+
+    if (!task.user_id)
+      return set({
+        createTaskError: "User ID not found",
+        createTaskLoading: false,
+      });
+
+    if (!task.title.trim())
+      return set({
+        createTaskError: "Task title is required",
+        createTaskLoading: false,
+      });
+
+    if (!task.priority)
+      return set({
+        createTaskError: "Choose a priority",
+        createTaskLoading: false,
+      });
 
     try {
       const { data, error } = await supabase
