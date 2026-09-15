@@ -13,10 +13,12 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskError: null,
 
   // Loadings
+  fetchTasksLoading: false,
   createTaskLoading: false,
   deleteTaskLoading: false,
 
   fetchTasks: async (user: User) => {
+    set({ fetchTasksLoading: true });
     try {
       if (!user) return;
 
@@ -27,14 +29,17 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       if (error) {
         console.log(error);
+        set({ fetchTasksLoading: false });
         return;
       }
 
       set({
         Tasks: data,
+        fetchTasksLoading: false,
       });
     } catch (error) {
       console.log(error);
+      set({ fetchTasksLoading: false });
     }
   },
 

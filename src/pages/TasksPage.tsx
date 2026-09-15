@@ -58,7 +58,9 @@ const TasksPage = () => {
   // Tasks
   const tasks = useTaskStore((s) => s.Tasks);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const fetchTasksLoading = useTaskStore((s) => s.fetchTasksLoading);
   const createTask = useTaskStore((s) => s.createTask);
+  const createTaskLoading = useTaskStore((s) => s.createTaskLoading);
   const createTaskError = useTaskStore((s) => s.createTaskError);
 
   // Inputs

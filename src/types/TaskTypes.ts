@@ -28,6 +28,7 @@ export type TaskStore = {
   createTaskError: string | null;
 
   // Loadings
+  fetchTasksLoading: boolean;
   createTaskLoading: boolean;
   deleteTaskLoading: boolean;
 
