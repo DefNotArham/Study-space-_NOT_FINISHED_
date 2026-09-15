@@ -9,8 +9,12 @@ import type { CreateTask } from "../types/TaskTypes";
 const useTaskStore = create<TaskStore>((set) => ({
   Tasks: [],
 
+  // Errors
   createTaskError: null,
+
+  // Loadings
   createTaskLoading: false,
+  deleteTaskLoading: false,
 
   fetchTasks: async (user: User) => {
     try {
@@ -115,6 +119,8 @@ const useTaskStore = create<TaskStore>((set) => ({
       }, 2000);
     }
   },
+
+  deleteTask: async (taskId) => {},
 }));
 
 export default useTaskStore;

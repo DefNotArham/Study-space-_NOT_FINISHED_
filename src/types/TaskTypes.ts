@@ -24,9 +24,14 @@ export type CreateTask = {
 export type TaskStore = {
   Tasks: Task[];
 
+  // Errors
   createTaskError: string | null;
+
+  // Loadings
   createTaskLoading: boolean;
+  deleteTaskLoading: boolean;
 
   fetchTasks: (user: User) => Promise<void>;
   createTask: (task: CreateTask) => Promise<void>;
+  deleteTask: (taskId: number) => Promise<void>;
 };
