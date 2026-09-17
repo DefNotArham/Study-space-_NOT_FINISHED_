@@ -1,2 +1,2 @@
 def register():
-    return {message: "Register endpoint"}
+    return {"message": "Register endpoint"}
