@@ -1,10 +1,5 @@
 import { create } from "zustand";
-
-import { supabase } from "../lib/supabase";
-
 import type { TaskStore } from "../types/TaskTypes";
-import type { User } from "@supabase/supabase-js";
-import type { CreateTask } from "../types/TaskTypes";
 
 const useTaskStore = create<TaskStore>((set) => ({
   Tasks: [],
@@ -17,139 +12,11 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskLoading: false,
   deleteTaskLoading: false,
 
-  fetchTasks: async (user: User) => {
-    set({ fetchTasksLoading: true });
-    try {
-      if (!user) return;
+  fetchTasks: async (user) => {},
 
-      const { data, error } = await supabase
-        .from("tasks")
-        .select("*")
-        .eq("user_id", user?.id);
+  createTask: async (task) => {},
 
-      if (error) {
-        console.log(error);
-        set({ fetchTasksLoading: false });
-        return;
-      }
-
-      set({
-        Tasks: data,
-        fetchTasksLoading: false,
-      });
-    } catch (error) {
-      console.log(error);
-      set({ fetchTasksLoading: false });
-    }
-  },
-
-  createTask: async (task: CreateTask) => {
-    set({
-      createTaskLoading: true,
-      createTaskError: null,
-    });
-
-    if (!task.user_id) {
-      set({
-        createTaskError: "User ID not found",
-        createTaskLoading: false,
-      });
-
-      setTimeout(() => {
-        set({ createTaskError: null });
-      }, 2000);
-
-      return;
-    }
-
-    if (!task.title.trim()) {
-      set({
-        createTaskError: "Task title is required",
-        createTaskLoading: false,
-      });
-
-      setTimeout(() => {
-        set({ createTaskError: null });
-      }, 2000);
-
-      return;
-    }
-
-    if (!task.priority) {
-      set({
-        createTaskError: "Choose a priority",
-        createTaskLoading: false,
-      });
-
-      setTimeout(() => {
-        set({ createTaskError: null });
-      }, 2000);
-
-      return;
-    }
-    try {
-      const { data, error } = await supabase
-        .from("tasks")
-        .insert(task)
-        .select()
-        .single();
-
-      if (error) {
-        console.log(error);
-        set({
-          createTaskError: error.message,
-          createTaskLoading: false,
-        });
-
-        setTimeout(() => {
-          set({ createTaskError: null });
-        }, 2000);
-        return;
-      }
-
-      set((state) => ({
-        Tasks: [...state.Tasks, data],
-        createTaskLoading: false,
-      }));
-    } catch (error) {
-      console.log(error);
-      set({
-        createTaskLoading: false,
-        createTaskError:
-          error instanceof Error ? error.message : "Something went wrong",
-      });
-
-      setTimeout(() => {
-        set({ createTaskError: null });
-      }, 2000);
-    }
-  },
-
-  deleteTask: async (taskId) => {
-    set({
-      deleteTaskLoading: true,
-    });
-
-    try {
-      const { error } = await supabase.from("tasks").delete().eq("id", taskId);
-
-      if (error) {
-        console.log(error);
-        set({ deleteTaskLoading: false });
-        return;
-      }
-
-      set((state) => ({
-        Tasks: state.Tasks.filter((t) => t.id !== taskId),
-        deleteTaskLoading: false,
-      }));
-    } catch (error) {
-      console.log(error);
-      set({
-        deleteTaskLoading: false,
-      });
-    }
-  },
+  deleteTask: async (taskId) => {},
 }));
 
 export default useTaskStore;
