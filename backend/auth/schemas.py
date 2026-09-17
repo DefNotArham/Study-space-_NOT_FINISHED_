@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+### Register
 
 def RegisterRequest(BaseModel):
     email: str

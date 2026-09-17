@@ -1,3 +1,5 @@
+### Register
+
 def register(data):
     print(data.email)
     print(data.username)
