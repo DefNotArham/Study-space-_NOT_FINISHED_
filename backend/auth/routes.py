@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from .schemas import RegisterRequest
+
 from .controllers import register
 
 router = APIRouter()
