@@ -1,8 +1,8 @@
+from database import get_connection
+
 ### Register
 
 def register(data):
-    print(data.email)
-    print(data.username)
-    print(data.password)
+    connection = get_connection()
 
     return {"message": "Register logic"}
