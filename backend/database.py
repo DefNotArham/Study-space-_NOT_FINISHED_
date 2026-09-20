@@ -6,6 +6,5 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-connection = psycopg.connect(DATABASE_URL)
-
-print("Connected to PostgreSQL!")
+def get_connection():
+    return psycopg.connect(DATABASE_URL)
