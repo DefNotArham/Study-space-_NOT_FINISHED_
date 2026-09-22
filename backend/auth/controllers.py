@@ -10,6 +10,9 @@ def register(data):
     cursor = connection.cursor()
 
     try:
+        if data.password != data.confirmPassword:
+            return {"message": "Passwords must be the same", "success": False}
+
         hashed_password = password_hash.hash(data.password)
 
         with open("auth/sql/register.sql", "r") as file:
