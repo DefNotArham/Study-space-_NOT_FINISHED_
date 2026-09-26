@@ -58,7 +58,7 @@ def login(data):
         with open("auth/sql/login.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql,data.eamil)
+        cursor.execute(sql,data.email)
         user = cursor.fetchone()
 
         if not user:
@@ -68,6 +68,12 @@ def login(data):
 
         if not password_hash.verify(data.password, stored_password):
             return {"message": "Invalid password", "success": False}
+
+        return {"message": "Login successful", "success": True, "user": {
+            "id": user[0],
+            "email": user[1],
+            "username": user[2]
+        }}
 
     except Exception as error:
         print(str(error))
