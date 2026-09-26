@@ -54,4 +54,7 @@ def login(data):
     connection = get_connection()
     cursor = connection.cursor()
 
-
+    try:
+        
+    except Exception as error:
+        print(str(error))
