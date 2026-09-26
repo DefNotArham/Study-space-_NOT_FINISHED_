@@ -38,3 +38,8 @@ def register(data):
         connection.close()
 
 ## Login
+def login(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+
