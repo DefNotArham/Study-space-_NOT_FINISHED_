@@ -27,6 +27,17 @@ def register(data):
 
         connection.commit()
         return {"message": "User successfully registered", "success": True}
+    
+    except UniqueViolation as error:
+        connection.rollback()
+
+        if "users_email_key" in str(error):
+            return {"message": "Email already exists", "success": False}
+
+        if "users_username_key" in str(error):
+            return {"message": "User allready exists", "success": False}
+
+        return {"message": "User already exists", "success": False}
 
     except Exception as error:
         print(str(error))
@@ -41,5 +52,5 @@ def register(data):
 def login(data):
     connection = get_connection()
     cursor = connection.cursor()
-    
+
 
