@@ -1,4 +1,4 @@
-from backend.database.database import get_connection
+from database.database import get_connection
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
 
@@ -58,7 +58,7 @@ def login(data):
         with open("auth/sql/login.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql,data.email)
+        cursor.execute(sql, (data.email,))
         user = cursor.fetchone()
 
         if not user:
