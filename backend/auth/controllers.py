@@ -1,4 +1,4 @@
-from database import get_connection
+from backend.database.database import get_connection
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
 
