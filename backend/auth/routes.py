@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from .schemas import RegisterRequest, LoginRequest
-from .controllers import register
+from .controllers import register, login
 
 router = APIRouter()
 
