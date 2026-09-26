@@ -9,4 +9,4 @@ router = APIRouter()
 
 @router.post("/register")
 def register_route(data: RegisterRequest):
-    register(data)
+    return register(data)
