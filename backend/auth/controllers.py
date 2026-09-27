@@ -1,6 +1,7 @@
 from database.database import get_connection
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
+from jwt import create_token
 
 password_hash = PasswordHash.recommended()
 
@@ -69,11 +70,18 @@ def login(data):
         if not password_hash.verify(data.password, stored_password):
             return {"message": "Invalid password", "success": False}
 
-        return {"message": "Login successful", "success": True, "user": {
+        token = create_token(user[0])
+
+        return {
+            "message": "Login successful", 
+            "success": True, 
+            "user": {
             "id": user[0],
             "email": user[1],
             "username": user[2]
-        }}
+            }, 
+            "token": token
+        }
 
     except Exception as error:
         print(str(error))
