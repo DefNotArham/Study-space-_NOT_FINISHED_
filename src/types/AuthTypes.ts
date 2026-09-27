@@ -31,7 +31,7 @@ export type AuthStore = {
     confirmPassword: string,
   ) => Promise<boolean>;
 
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
 
   logout: () => Promise<void>;
 
