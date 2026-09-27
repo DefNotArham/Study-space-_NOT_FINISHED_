@@ -7,6 +7,8 @@ from jwt import create_token
 
 import secrets
 
+from datetime import datetime, timedelta
+
 password_hash = PasswordHash.recommended()
 
 
@@ -14,7 +16,6 @@ password_hash = PasswordHash.recommended()
 def register(data):
     connection = get_connection()
     cursor = connection.cursor()
-    token = secrets.token_urlsafe(32)
 
     try:
         ## Password error handling
@@ -33,6 +34,15 @@ def register(data):
         )
 
         user_id = cursor.fetchone()[0]
+        verification_token = secrets.token_urlsafe(32)
+
+        with open("auth/sql/create_verification_token.sql", "r") as file:
+            verificationSql = file.read()
+
+        cursor.execute(
+            verificationSql,
+            (user_id, verification_token, datetime.utcnow() + timedelta(minutes=15) )
+        )
 
         connection.commit()
         return {"message": "User successfully registered", "success": True}
