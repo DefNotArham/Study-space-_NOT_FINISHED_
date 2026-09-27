@@ -336,7 +336,7 @@ const TasksPage = () => {
                 if (!user) return;
 
                 createTask({
-                  user_id: user.id,
+                  user_id: String(user.id),
                   title,
                   description,
                   subject,

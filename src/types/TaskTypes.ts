@@ -1,4 +1,4 @@
-import type { User } from "@supabase/supabase-js";
+import type { User } from "./AuthTypes";
 
 export type Task = {
   id: number;

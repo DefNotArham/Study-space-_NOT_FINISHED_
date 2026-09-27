@@ -84,7 +84,7 @@ export default function HomePage() {
                 className="text-[1.7rem] italic tracking-tight text-[#F3E9DC]"
                 style={{ fontFamily: "'Fraunces', serif" }}
               >
-                {timeGreeting}, {user?.user_metadata.display_name}
+                {timeGreeting}, {user?.username}
               </h1>
               <p className="mt-1 text-[14px] text-[#8A7B6C]">{today}</p>
             </div>
