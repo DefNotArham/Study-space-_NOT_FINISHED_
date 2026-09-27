@@ -32,6 +32,8 @@ def register(data):
             (data.email, data.username, hashed_password)
         )
 
+        user_id = cursor.fetchone()[0]
+
         connection.commit()
         return {"message": "User successfully registered", "success": True}
     
