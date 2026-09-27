@@ -5,3 +5,10 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     email_verified BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE email_verification_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    token TEXT NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
