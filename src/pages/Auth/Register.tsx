@@ -25,8 +25,8 @@ export default function Register() {
 
   const handleRegister = async () => {
     try {
-      await register(email, name, password, confirmPassword);
-      navigate("/check-email");
+      const success = await register(email, name, password, confirmPassword);
+      if (success) navigate("/check-email");
     } catch (error) {
       console.log(error);
     }
