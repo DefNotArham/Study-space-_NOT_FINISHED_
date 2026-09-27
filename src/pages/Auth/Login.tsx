@@ -24,8 +24,10 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
-      navigate("/");
+      const success = await login(email, password);
+      if (success) {
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
