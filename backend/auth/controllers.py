@@ -1,7 +1,11 @@
 from database.database import get_connection
+
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
+
 from jwt import create_token
+
+import secrets
 
 password_hash = PasswordHash.recommended()
 
@@ -10,6 +14,7 @@ password_hash = PasswordHash.recommended()
 def register(data):
     connection = get_connection()
     cursor = connection.cursor()
+    token = secrets.token_urlsafe(32)
 
     try:
         ## Password error handling
@@ -89,4 +94,3 @@ def login(data):
 
         return {"message": str(error), "success": False}
 
-    
