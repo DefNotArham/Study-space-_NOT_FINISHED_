@@ -44,15 +44,22 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       const data = await response.json();
 
-      if (!data.success) return set({ registerError: data.message });
+      if (!data.success) {
+        set({ registerError: data.message });
+        return false;
+      }
 
       set({
         registerError: null,
       });
+
+      return true;
     } catch (error) {
       console.log(error);
 
       set({ registerError: "Something went wrong" });
+
+      return false;
     }
   },
 

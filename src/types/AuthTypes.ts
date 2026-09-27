@@ -1,5 +1,3 @@
-import type { User } from "@supabase/supabase-js";
-
 export type AuthStore = {
   user: User | null;
   isInitialized: boolean;
@@ -25,7 +23,7 @@ export type AuthStore = {
     username: string,
     password: string,
     confirmPassword: string,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 
   login: (email: string, password: string) => Promise<void>;
 
