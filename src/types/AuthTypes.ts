@@ -1,3 +1,9 @@
+export type User = {
+  id: number;
+  email: string;
+  username: string;
+};
+
 export type AuthStore = {
   user: User | null;
   isInitialized: boolean;
