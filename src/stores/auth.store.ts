@@ -27,7 +27,34 @@ export const useAuthStore = create<AuthStore>((set) => ({
     username: string,
     password: string,
     confirmPassword: string,
-  ) => {},
+  ) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          username,
+          password,
+          confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) return set({ registerError: data.message });
+
+      set({
+        registerError: null,
+      });
+    } catch (error) {
+      console.log(error);
+
+      set({ registerError: "Something went wrong" });
+    }
+  },
 
   login: async (email: string, password: string) => {},
 
