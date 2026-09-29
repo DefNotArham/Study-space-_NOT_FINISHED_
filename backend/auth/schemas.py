@@ -8,6 +8,13 @@ class RegisterRequest(BaseModel):
     password: str = Field(min_length=1)
     confirmPassword: str = Field(min_length=1)
 
+# Login
+
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str = Field(min_length=1)
+
+# Verify Email
+
+class VerifyEmailRequest(BaseModel):
+    token: str

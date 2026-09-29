@@ -113,3 +113,6 @@ def login(data):
 
         return {"message": str(error), "success": False}
 
+## Verify email
+def verifyEmail():
+    

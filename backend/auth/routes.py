@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .schemas import RegisterRequest, LoginRequest
-from .controllers import register, login
+from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest
+from .controllers import register, login, verifyEmail
 
 router = APIRouter()
 
@@ -14,3 +14,7 @@ def register_route(data: RegisterRequest):
 @router.post("/login")
 def login_route(data: LoginRequest):
     return login(data)
+
+@router.post("/verify-email")
+def verifyEmail_route(data: VerifyEmailRequest):
+    return verifyEmail(data)
