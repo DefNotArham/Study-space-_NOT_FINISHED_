@@ -112,7 +112,14 @@ def login(data):
         connection.rollback()
 
         return {"message": str(error), "success": False}
+    finally:
+        cursor.close()
+        connection.close()
+        
 
 ## Verify email
 def verifyEmail():
+    connection = get_connection()
+    cursor = connection.cursor()
+
     
