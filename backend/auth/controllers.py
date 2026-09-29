@@ -147,6 +147,9 @@ def verifyEmail(data):
             sql3 = file.read()
 
         cursor.execute(sql3, (data.token,))
+
+        connection.commit()
+        return {"message": "Email successfully verified", "success": True}
         
     except Exception as error:
         print(str(error))
