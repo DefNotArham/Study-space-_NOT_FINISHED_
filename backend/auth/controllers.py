@@ -118,8 +118,35 @@ def login(data):
         
 
 ## Verify email
-def verifyEmail():
+def verifyEmail(data):
     connection = get_connection()
     cursor = connection.cursor()
 
-    
+    try:
+        with open("auth/sql/verify_email.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql, (data.token,))
+        verification = cursor.fetchone()
+
+        if not verification:
+            return {"message": "Invalid verification token", "success": False}
+
+        user_id = verification[0]
+        expires_at = verification[1]
+
+        if datetime.utcnow() > expires_at:
+            return {"message": "Verification token has expired", "success": False}
+
+        with open("auth/sql/user_verified.sql", "r") as file:
+            sql2 = file.read()
+
+        cursor.execute(sql2, (user_id,))
+        
+    except Exception as error:
+        print(str(error))
+        return {"message": str(error), "success": False}
+    finally:
+        cursor.close()
+        connection.close()
+
