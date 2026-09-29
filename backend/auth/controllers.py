@@ -142,6 +142,11 @@ def verifyEmail(data):
             sql2 = file.read()
 
         cursor.execute(sql2, (user_id,))
+
+        with open("auth/sql/verify_email/delete_token.sql", "r") as file:
+            sql3 = file.read()
+
+        cursor.execute(sql3, (data.token,))
         
     except Exception as error:
         print(str(error))
