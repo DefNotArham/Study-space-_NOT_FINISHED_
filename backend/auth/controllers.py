@@ -157,4 +157,3 @@ def verifyEmail(data):
     finally:
         cursor.close()
         connection.close()
-
