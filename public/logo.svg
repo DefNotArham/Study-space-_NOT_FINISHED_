@@ -1,0 +1,20 @@
+ <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style="
+                          display: block;
+                          margin: 0 auto;
+                          filter: drop-shadow(0 0 4px rgba(227, 165, 103, 0.9));
+                        "
+                      >
+                        <path
+                          d="M12 3.5c.6 2.1-.4 3.4-1.6 4.6-1.6 1.6-2.9 3.2-2.9 5.4a4.5 4.5 0 0 0 9 0c0-1.3-.4-2.2-1-3.1-.3.9-.9 1.5-1.6 1.5-.9 0-1.5-.8-1.3-1.7.3-1.5-.3-3-1.6-3.9-.2 1-.6 1.7-1.3 2.2-.3-1.7 0-3.4 1.3-5Z"
+                          fill="none"
+                          stroke="#E3A567"
+                          stroke-width="1.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
