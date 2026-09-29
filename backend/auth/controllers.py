@@ -4,10 +4,10 @@ from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
 
 from jwt import create_token
-
 import secrets
-
 from datetime import datetime, timedelta
+
+from .mail.mail import send_verification_email
 
 password_hash = PasswordHash.recommended()
 
@@ -45,6 +45,13 @@ def register(data):
         )
 
         connection.commit()
+
+        try:
+            send_verification_email(data.email, verification_token)
+        except Exception as error:
+            print(f"Failed to send verification email: {error}")
+            return {"message": "Account created, but we could not send the verification email."}
+
         return {"message": "User successfully registered", "success": True}
     
     except UniqueViolation as error:
