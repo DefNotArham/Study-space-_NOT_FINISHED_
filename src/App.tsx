@@ -6,6 +6,7 @@ import CheckEmail from "./pages/auth/CheckEmail";
 import EmailConfirmed from "./pages/auth/EmailConfirmed";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import VerifyEmail from "./pages/auth/VerifyEmail";
 
 import HomePage from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
@@ -47,11 +48,12 @@ export default function App() {
         <Route
           path="/check-email"
           element={
-            <PublicRoute>
-              <CheckEmail />
-            </PublicRoute>
+            // <PublicRoute>
+            <CheckEmail />
+            /* </PublicRoute> */
           }
         />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route
           path="/forgot-password"
           element={
