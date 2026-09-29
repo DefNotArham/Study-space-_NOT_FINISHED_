@@ -3,7 +3,7 @@ from database.database import get_connection
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
 
-from jwt import create_token
+from .jwt import create_token
 import secrets
 from datetime import datetime, timedelta
 

@@ -21,7 +21,7 @@ def send_verification_email(user_email, verification_token):
 
     verification_email_path = (Path(__file__).parent / "verification_email.html")
     verification_email_html = verification_email_path.read_text(encoding="utf-8")
-    
+
     verification_url = (f"{FRONTEND_URL}/verify-email?token={verification_token}")
 
     html = verification_email_html.replace(
@@ -33,7 +33,7 @@ def send_verification_email(user_email, verification_token):
         "Messages": [
             {
                 "From": {
-                    "Email": "your-email@example.com",
+                    "Email": "arhamkabir231@gmail.com",
                     "Name": "Study Space"
                 },
                 "To": [
