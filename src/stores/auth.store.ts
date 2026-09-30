@@ -10,6 +10,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
   loginError: null,
   loginLoading: false,
 
+  verifyEmailError: null,
+
   logoutLoading: false,
 
   isInitialized: false,
@@ -89,6 +91,33 @@ export const useAuthStore = create<AuthStore>((set) => ({
     } catch (error) {
       console.log(error);
       set({ loginError: "Something went wrong" });
+      return false;
+    }
+  },
+
+  verifyEmail: async (token: string) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/verify-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        set({ verifyEmailError: data.message });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      set({ verifyEmailError: "Something went wrong" });
       return false;
     }
   },

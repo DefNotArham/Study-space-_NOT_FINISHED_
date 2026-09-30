@@ -14,6 +14,8 @@ export type AuthStore = {
   loginError: string | null;
   loginLoading: boolean;
 
+  verifyEmailError: string | null;
+
   logoutLoading: boolean;
 
   forgotPasswordLoading: boolean;
@@ -32,6 +34,8 @@ export type AuthStore = {
   ) => Promise<boolean>;
 
   login: (email: string, password: string) => Promise<boolean>;
+
+  verifyEmail: (token: string) => Promise<boolean>;
 
   logout: () => Promise<void>;
 
