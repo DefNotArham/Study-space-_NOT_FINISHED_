@@ -54,6 +54,11 @@ export default function VerifyEmail() {
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#4A3626] border-t-[#E3A567]" />
           </div>
 
+          {/* Error */}
+          {verifyEmailError && (
+            <p className="mt-5 text-sm text-red-400">{verifyEmailError}</p>
+          )}
+
           {/* Token missing */}
           {!token && (
             <p className="mt-5 text-xs text-red-400">
