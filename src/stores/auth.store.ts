@@ -116,6 +116,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   verifyEmail: async (token: string) => {
+    set({ verifyEmailError: null });
+
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/verify-email", {
         method: "POST",
@@ -131,6 +133,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       if (!data.success) {
         set({ verifyEmailError: data.message });
+
+        setTimeout(() => {
+          set({ verifyEmailError: null });
+        }, 3000);
         return false;
       }
 
@@ -138,6 +144,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
     } catch (error) {
       console.log(error);
       set({ verifyEmailError: "Something went wrong" });
+      setTimeout(() => {
+        set({ verifyEmailError: null });
+      }, 3000);
       return false;
     }
   },
