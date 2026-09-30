@@ -30,6 +30,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     password: string,
     confirmPassword: string,
   ) => {
+    set({ registerLoading: true, registerError: null });
+
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/register", {
         method: "POST",
@@ -47,25 +49,35 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const data = await response.json();
 
       if (!data.success) {
-        set({ registerError: data.message });
+        set({ registerError: data.message, registerLoading: false });
+
+        setTimeout(() => {
+          set({ registerError: null });
+        }, 3000);
+
         return false;
       }
 
       set({
         registerError: null,
+        registerLoading: false,
       });
 
       return true;
     } catch (error) {
       console.log(error);
 
-      set({ registerError: "Something went wrong" });
+      set({ registerError: "Something went wrong", registerLoading: false });
+      setTimeout(() => {
+        set({ registerError: null });
+      }, 3000);
 
       return false;
     }
   },
 
   login: async (email: string, password: string) => {
+    set({ loginLoading: true, loginError: null });
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/login", {
         method: "POST",
@@ -81,7 +93,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const data = await response.json();
 
       if (!data.success) {
-        set({ loginError: data.message });
+        set({ loginError: data.message, loginLoading: false });
+
+        setTimeout(() => {
+          set({ loginError: null });
+        }, 3000);
 
         return false;
       }
@@ -90,7 +106,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
       return true;
     } catch (error) {
       console.log(error);
-      set({ loginError: "Something went wrong" });
+      set({ loginError: "Something went wrong", loginLoading: false });
+
+      setTimeout(() => {
+        set({ loginError: null });
+      }, 3000);
       return false;
     }
   },
