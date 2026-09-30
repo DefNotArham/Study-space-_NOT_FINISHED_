@@ -1,10 +1,30 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Logo from "../../components/icons/logo";
+import { useEffect } from "react";
+import { useAuthStore } from "../../stores/auth.store";
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
 
   const token = searchParams.get("token");
+
+  const verifyEmail = useAuthStore((state) => state.verifyEmail);
+  const verifyEmailError = useAuthStore((state) => state.verifyEmailError);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      if (!token) return;
+      const success = await verifyEmail(token);
+
+      if (success) {
+        navigate("/");
+      }
+    };
+
+    verifyUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#120C09] px-6">
