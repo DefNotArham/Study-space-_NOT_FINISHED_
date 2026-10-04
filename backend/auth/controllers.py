@@ -89,6 +89,9 @@ def login(data):
         if not user:
             return {"message": "User does not exist", "success": False}
 
+        if not user.email_verified:
+            return { "message": "Please verify your email before logging in."}
+
         stored_password = user[3]
 
         if not password_hash.verify(data.password, stored_password):
