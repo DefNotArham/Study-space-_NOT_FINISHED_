@@ -50,7 +50,7 @@ def register(data):
             send_verification_email(data.email, verification_token)
         except Exception as error:
             print(f"Failed to send verification email: {error}")
-            return {"message": "Account created, but we could not send the verification email."}
+            return {"message": "Account created, but we could not send the verification email.", "success": False}
 
         return {"message": "User successfully registered", "success": True}
     
