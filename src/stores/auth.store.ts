@@ -102,11 +102,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
         return false;
       }
 
-      set({ user: data.user, loginError: null });
+      set({ user: data.user, loginError: null, loginLoading: false });
       return true;
     } catch (error) {
       console.log(error);
-      set({ loginError: "Something went wrong", loginLoading: false });
+      set({
+        loginError: "Something went wrong",
+        loginLoading: false,
+        user: null,
+      });
 
       setTimeout(() => {
         set({ loginError: null });
