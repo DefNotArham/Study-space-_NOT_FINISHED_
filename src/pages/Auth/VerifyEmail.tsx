@@ -19,7 +19,7 @@ export default function VerifyEmail() {
       const success = await verifyEmail(token);
 
       if (success) {
-        navigate("/");
+        navigate("/login");
       }
     };
 
