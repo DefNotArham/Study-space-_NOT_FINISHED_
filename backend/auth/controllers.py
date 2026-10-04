@@ -61,7 +61,7 @@ def register(data):
             return {"message": "Email already exists", "success": False}
 
         if "users_username_key" in str(error):
-            return {"message": "User allready exists", "success": False}
+            return {"message": "Username already exists", "success": False}
 
         return {"message": "User already exists", "success": False}
 
