@@ -102,6 +102,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         return false;
       }
 
+      localStorage.setItem("token", data.token);
       set({ user: data.user, loginError: null, loginLoading: false });
       return true;
     } catch (error) {
