@@ -16,3 +16,13 @@ def create_token(user_id):
 
     token = jwt.encode(payload, JWT_SECRET, algorithm=ALGORITHM)
     return token
+
+def verify_token(token):
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
