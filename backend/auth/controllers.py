@@ -168,7 +168,7 @@ def get_current_user(token):
     cursor = connection.cursor()
 
     try: 
-        with open("/auth/sql/getCurrentUser.sql", "r") as file:
+        with open("auth/sql/getCurrentUser.sql", "r") as file:
             sql = file.read()
         cursor.execute(
             sql,
