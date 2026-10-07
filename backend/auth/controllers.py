@@ -3,7 +3,7 @@ from database.database import get_connection
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
 
-from .jwt import create_token
+from .jwt import create_token, verify_token
 import secrets
 from datetime import datetime, timedelta
 
@@ -155,3 +155,9 @@ def verifyEmail(data):
     finally:
         cursor.close()
         connection.close()
+
+def get_current_user(token):
+    payload = verify_token(token)
+
+    if not payload:
+        return {"message": "Invalid or expired token", "success": False}
