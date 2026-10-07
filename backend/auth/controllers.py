@@ -161,3 +161,19 @@ def get_current_user(token):
 
     if not payload:
         return {"message": "Invalid or expired token", "success": False}
+
+    user_id = payload["user_id"]
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try: 
+        with open("/auth/sql/getCurrentUser.sql", "r") as file:
+            sql = file.read()
+        cursor.execute(
+            sql,
+           (user_id,)
+        )
+
+        user = cursor.fetchone()
+        
