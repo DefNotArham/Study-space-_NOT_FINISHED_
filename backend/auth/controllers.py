@@ -176,4 +176,25 @@ def get_current_user(token):
         )
 
         user = cursor.fetchone()
+
+        if not user:
+            return {"message": "User not found", "success": False}
+
+        return {
+            "success": True,
+            "user": {
+                "id": user[0],
+                "email": user[1],
+                "username": user[2]
+            }
+        }
+
+    except Exception as error:
+        print(error)
+        return {"message": str(error), "success": False}
+
+    
+    finally:
+        cursor.close()
+        connection.close()
         
