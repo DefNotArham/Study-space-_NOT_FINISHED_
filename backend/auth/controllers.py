@@ -156,6 +156,8 @@ def verifyEmail(data):
         cursor.close()
         connection.close()
 
+# Get Current User
+
 def get_current_user(token):
     payload = verify_token(token)
 
