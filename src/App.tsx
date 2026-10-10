@@ -48,9 +48,9 @@ export default function App() {
         <Route
           path="/check-email"
           element={
-            // <PublicRoute>
-            <CheckEmail />
-            /* </PublicRoute> */
+            <PublicRoute>
+              <CheckEmail />
+            </PublicRoute>
           }
         />
         <Route path="/verify-email" element={<VerifyEmail />} />
