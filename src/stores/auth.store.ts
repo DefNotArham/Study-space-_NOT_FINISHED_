@@ -65,7 +65,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
     // Error handling
 
     if (!email.trim() || !password.trim()) {
-      set({ registerError: "Please enter your email and password" });
+      set({
+        registerError: "Please enter your email and password",
+        registerLoading: false,
+      });
 
       setTimeout(() => {
         set({ registerError: null });
@@ -124,7 +127,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
     // Error handling
 
     if (!email.trim() || !password.trim()) {
-      set({ loginError: "Please enter your email and password" });
+      set({
+        loginError: "Please enter your email and password",
+        loginLoading: false,
+      });
 
       setTimeout(() => {
         set({ loginError: null });
