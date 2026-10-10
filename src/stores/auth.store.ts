@@ -186,7 +186,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  logout: async () => {},
+  logout: async () => {
+    localStorage.removeItem("token");
+    set({ user: null });
+  },
 
   forgotPassword: async (email: string) => {},
 
