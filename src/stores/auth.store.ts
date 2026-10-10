@@ -22,7 +22,37 @@ export const useAuthStore = create<AuthStore>((set) => ({
   resetPasswordError: null,
   resetPasswordLoading: false,
 
-  initializeAuth: async () => {},
+  initializeAuth: async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      set({ user: null, isInitialized: true });
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        localStorage.removeItem("token");
+        set({ user: null, isInitialized: true });
+
+        return;
+      }
+
+      set({ user: data.user, isInitialized: true });
+    } catch (error) {
+      console.log(error);
+      set({ isInitialized: true });
+    }
+  },
 
   register: async (
     email: string,
