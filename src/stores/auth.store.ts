@@ -68,7 +68,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ registerError: "Please enter your email and password" });
 
       setTimeout(() => {
-        set({ loginError: null });
+        set({ registerError: null });
       }, 3000);
 
       return false;
