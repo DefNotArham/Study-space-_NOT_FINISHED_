@@ -62,6 +62,18 @@ export const useAuthStore = create<AuthStore>((set) => ({
   ) => {
     set({ registerLoading: true, registerError: null });
 
+    // Error handling
+
+    if (!email.trim() || !password.trim()) {
+      set({ registerError: "Please enter your email and password" });
+
+      setTimeout(() => {
+        set({ loginError: null });
+      }, 3000);
+
+      return false;
+    }
+
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/register", {
         method: "POST",
