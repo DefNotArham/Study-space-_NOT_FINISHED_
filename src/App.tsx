@@ -32,17 +32,17 @@ export default function App() {
         <Route
           path="/login"
           element={
-            // <PublicRoute>
-            <Login />
-            /* </PublicRoute> */
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
           }
         />
         <Route
           path="/register"
           element={
-            // <PublicRoute>
-            <Register />
-            // </PublicRoute>
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
           }
         />
         <Route
@@ -68,9 +68,9 @@ export default function App() {
         <Route
           path="/"
           element={
-            // <ProtectedRoute>
-            <HomePage />
-            /* </ProtectedRoute> */
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
           }
         />
         <Route
