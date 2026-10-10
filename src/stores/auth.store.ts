@@ -108,6 +108,19 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   login: async (email: string, password: string) => {
     set({ loginLoading: true, loginError: null });
+
+    // Error handling
+
+    if (!email.trim() || !password.trim()) {
+      set({ loginError: "Please enter your email and password" });
+
+      setTimeout(() => {
+        set({ loginError: null });
+      }, 3000);
+
+      return false;
+    }
+
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/login", {
         method: "POST",
