@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, GetCurrentUserRequest
 from .controllers import register, login, verifyEmail, get_current_user
@@ -20,5 +20,12 @@ def verifyEmail_route(data: VerifyEmailRequest):
     return verifyEmail(data)
 
 @router.get("/me")
-def getCurrentUser_route(data: GetCurrentUserRequest):
-    return get_current_user(data.token)
+def getCurrentUser_route(authorization: str | None = Header(default=None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    return get_current_user(token)
