@@ -60,15 +60,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     password: string,
     confirmPassword: string,
   ) => {
-    set({ registerLoading: true, registerError: null });
-
-    // Error handling
-
-    if (!email.trim() || !password.trim()) {
-      set({
-        registerError: "Please fill in all fields",
-        registerLoading: false,
-      });
+    if (!email.trim() || !username.trim() || !password || !confirmPassword) {
+      set({ registerError: "Please fill in all fields" });
 
       setTimeout(() => {
         set({ registerError: null });
@@ -76,6 +69,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       return false;
     }
+
+    set({ registerLoading: true, registerError: null });
 
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/register", {
@@ -122,14 +117,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   login: async (email: string, password: string) => {
-    set({ loginLoading: true, loginError: null });
-
-    // Error handling
-
     if (!email.trim() || !password.trim()) {
       set({
         loginError: "Please enter your email and password",
-        loginLoading: false,
       });
 
       setTimeout(() => {
@@ -138,6 +128,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       return false;
     }
+
+    set({ loginLoading: true, loginError: null });
 
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/login", {
