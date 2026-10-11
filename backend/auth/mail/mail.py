@@ -19,7 +19,7 @@ mailjet = Client(
 
 def send_verification_email(user_email, verification_token):
 
-    verification_email_path = (Path(__file__).parent / "verification_email.html")
+    verification_email_path = Path(__file__).parent / "templates" / "verification_email.html"
     verification_email_html = verification_email_path.read_text(encoding="utf-8")
 
     verification_url = (f"{FRONTEND_URL}/verify-email?token={verification_token}")
@@ -51,3 +51,5 @@ def send_verification_email(user_email, verification_token):
 
     print(result.status_code)
     print(result.json())
+
+def send_forgot_password_email(user_email):
