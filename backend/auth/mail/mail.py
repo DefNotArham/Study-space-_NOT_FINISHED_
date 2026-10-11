@@ -52,4 +52,32 @@ def send_verification_email(user_email, verification_token):
     print(result.status_code)
     print(result.json())
 
-def send_forgot_password_email(user_email):
+def send_forgot_password_email(user_email, reset_token):
+    forgot_password_email_path = (Path(__file__).parent / "templates" / "forgot_password_email.html")
+    forgot_password_email_html = forgot_password_email_path.read_text(encoding="utf-8")
+
+    reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+    html = forgot_password_email_html.replace("{{reset_url}}",reset_url)
+
+    data = {
+    "Messages": [
+        {
+            "From": {
+                "Email": "arhamkabir231@gmail.com",
+                "Name": "Study Space"
+            },
+            "To": [
+                {
+                    "Email": user_email
+                }
+            ],
+            "Subject": "Reset your Study Space password",
+            "HTMLPart": html
+        }
+    ]
+}
+
+    result = mailjet.send.create(data=data)
+
+    print(result.status_code)
+    print(result.json())
