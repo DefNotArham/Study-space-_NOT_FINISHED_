@@ -70,6 +70,19 @@ export const useAuthStore = create<AuthStore>((set) => ({
       return false;
     }
 
+    if (password !== confirmPassword) {
+      set({
+        registerError: "Passwords do not match",
+        registerLoading: false,
+      });
+
+      setTimeout(() => {
+        set({ registerError: null });
+      }, 3000);
+
+      return false;
+    }
+
     set({ registerLoading: true, registerError: null });
 
     try {
