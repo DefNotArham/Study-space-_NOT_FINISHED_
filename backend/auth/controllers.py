@@ -230,6 +230,11 @@ def ForgotPassword(data):
         cursor.execute(sql2, (user_id, reset_token, expires_at))
         connection.commit()
 
+        try:
+            send_forgot_password_email(user[1], reset_token)
+        except Exception as error:
+            print(f"Failed to send password reset email: {error}")
+            
     except Exception as error:
         print(error)
         return {"message": str(error), "success": False}
