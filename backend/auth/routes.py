@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 
 from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, ForgotPasswordRequest
-from .controllers import register, login, verifyEmail, get_current_user, ForgotPassword
+from .controllers import register, login, verifyEmail, get_current_user # ForgotPassword
 
 router = APIRouter()
 

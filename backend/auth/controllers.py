@@ -7,7 +7,7 @@ from .jwt import create_token, verify_token
 import secrets
 from datetime import datetime, timedelta
 
-from .mail.mail import send_verification_email
+from .mail.mail import send_verification_email, send_forgot_password_email
 
 password_hash = PasswordHash.recommended()
 
@@ -203,4 +203,4 @@ def get_current_user(token):
 ## Forgot password
 
 def ForgotPassword(data):
-    
+    try:
