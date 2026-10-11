@@ -19,6 +19,7 @@ class LoginRequest(BaseModel):
 class VerifyEmailRequest(BaseModel):
     token: str
 
-# Get Current User
-class GetCurrentUserRequest(BaseModel):
-    token: str
+
+# Forgot password
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr

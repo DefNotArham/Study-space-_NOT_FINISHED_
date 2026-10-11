@@ -199,4 +199,8 @@ def get_current_user(token):
     finally:
         cursor.close()
         connection.close()
-        
+
+## Forgot password
+
+def ForgotPassword(data):
+    
