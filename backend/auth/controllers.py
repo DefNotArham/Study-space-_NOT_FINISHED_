@@ -234,7 +234,12 @@ def ForgotPassword(data):
             send_forgot_password_email(user[1], reset_token)
         except Exception as error:
             print(f"Failed to send password reset email: {error}")
-            
+
+        return {
+            "message": "If an account exists with that email, a reset link will be sent.",
+            "success": True
+        }
+
     except Exception as error:
         print(error)
         return {"message": str(error), "success": False}
