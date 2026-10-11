@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if (!email.trim() || !password.trim()) {
       set({
-        registerError: "Please enter your email and password",
+        registerError: "Please fill in all fields",
         registerLoading: false,
       });
 
