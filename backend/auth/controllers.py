@@ -203,4 +203,37 @@ def get_current_user(token):
 ## Forgot password
 
 def ForgotPassword(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+
     try:
+        with open("auth/sql/forgot_password/forgot_password.sql", "r") as file:
+            sql1  = file.read()
+
+        cursor.execute(sql1, (data.email,))
+        user = cursor.fetchone()
+
+        if not user:
+            ## Security reason: don't reveal whether an email has an account or not
+            return {
+                 "message": "If an account exists with that email, a reset link will be sent.",
+                 "success": True
+            }
+
+        user_id = user[0]
+        reset_token = secrets.token_urlsafe(32)
+        expires_at = datetime.utcnow()+ timedelta(minutes=15)
+
+        with open("auth/sql/forgot_password/create_password_reset_token.sql", "r") as file:
+            sql2 = file.read()
+
+        cursor.execute(sql2, (user_id, reset_token, expires_at))
+        connection.commit()
+
+    except Exception as error:
+        print(error)
+        return {"message": str(error), "success": False}
+
+    finally:
+        cursor.close()
+        connection.close()
