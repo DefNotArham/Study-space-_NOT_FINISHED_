@@ -272,7 +272,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       return true;
     } catch (error) {
-      set({ forgotPasswordError: "Something went wrong" });
+      set({
+        forgotPasswordError: "Something went wrong",
+        forgotPasswordLoading: false,
+      });
 
       setTimeout(() => {
         set({ forgotPasswordError: null });
