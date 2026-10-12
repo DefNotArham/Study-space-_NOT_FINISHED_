@@ -290,7 +290,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     if (!newPassword || !confirmNewPassword) {
       set({ resetPasswordError: "Please fill in all fields" });
 
-      setInterval(() => {
+      setTimeout(() => {
         set({ resetPasswordError: null });
       }, 3000);
 
@@ -318,6 +318,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
           resetPasswordLoading: false,
         });
 
+        setTimeout(() => {
+          set({ resetPasswordError: null });
+        }, 3000);
+
         return false;
       }
 
@@ -343,6 +347,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
           resetPasswordLoading: false,
         });
 
+        setTimeout(() => {
+          set({ resetPasswordError: null });
+        }, 3000);
+
         return false;
       }
 
@@ -355,6 +363,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
         resetPasswordError: "Something went wrong",
         resetPasswordLoading: false,
       });
+
+      setTimeout(() => {
+        set({ resetPasswordError: null });
+      }, 3000);
       return false;
     }
   },
