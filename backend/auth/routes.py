@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 
-from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, ForgotPasswordRequest
-from .controllers import register, login, verifyEmail, get_current_user, ForgotPassword
+from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, ForgotPasswordRequest, ResetPasswordRequest
+from .controllers import register, login, verifyEmail, get_current_user, ForgotPassword, ResetPassword
 
 router = APIRouter()
 
@@ -33,3 +33,7 @@ def getCurrentUser_route(authorization: str | None = Header(default=None)):
 @router.post("/forgot-password")
 def forgotPassword_route(data: ForgotPasswordRequest):
     return ForgotPassword(data)
+
+@router.post("/reset-password")
+def resetPassword_route(data: ResetPasswordRequest):
+    return ResetPassword(data)
