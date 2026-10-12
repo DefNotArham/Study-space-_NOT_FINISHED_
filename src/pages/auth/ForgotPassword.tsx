@@ -75,7 +75,7 @@ export default function ForgotPassword() {
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-6 text-[13px] font-medium text-[#E3A567] transition-colors duration-200 hover:text-[#EFC694]"
+                className="mt-6 text-[13px] font-medium text-[#E3A567] transition-colors duration-200 hover:text-[#EFC694] cursor-pointer"
               >
                 Try a different email
               </button>
