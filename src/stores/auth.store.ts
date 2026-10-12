@@ -227,7 +227,61 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ user: null });
   },
 
-  forgotPassword: async (email: string) => {},
+  forgotPassword: async (email: string) => {
+    if (!email.trim()) {
+      set({
+        forgotPasswordError: "Please enter your email",
+      });
+
+      setTimeout(() => {
+        set({ forgotPasswordError: null });
+      }, 3000);
+      return false;
+    }
+
+    set({ forgotPasswordLoading: true, forgotPasswordError: null });
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          forgotPasswordError: data.message || "Something went wrong",
+          forgotPasswordLoading: false,
+        });
+
+        setTimeout(() => {
+          set({ forgotPasswordError: null });
+        }, 3000);
+
+        return false;
+      }
+
+      set({ forgotPasswordLoading: false, forgotPasswordError: null });
+
+      return true;
+    } catch (error) {
+      set({ forgotPasswordError: "Something went wrong" });
+
+      setTimeout(() => {
+        set({ forgotPasswordError: null });
+      }, 3000);
+      console.log(error);
+
+      return false;
+    }
+  },
 
   resetPassword: async (newPassword: string, confirmNewPassword: string) => {},
 }));

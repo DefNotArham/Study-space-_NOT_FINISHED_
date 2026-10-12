@@ -39,7 +39,7 @@ export type AuthStore = {
 
   logout: () => Promise<void>;
 
-  forgotPassword: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<boolean>;
   resetPassword: (
     newPassword: string,
     confirmNewPassword: string,
