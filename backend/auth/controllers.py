@@ -247,3 +247,5 @@ def ForgotPassword(data):
     finally:
         cursor.close()
         connection.close()
+
+# Reset password
