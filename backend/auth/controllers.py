@@ -1,12 +1,9 @@
 from database.database import get_connection
-
 from pwdlib import PasswordHash
 from psycopg.errors import UniqueViolation
-
 from .jwt import create_token, verify_token
 import secrets
 from datetime import datetime, timedelta
-
 from .mail.mail import send_verification_email, send_forgot_password_email
 
 password_hash = PasswordHash.recommended()
@@ -249,3 +246,56 @@ def ForgotPassword(data):
         connection.close()
 
 # Reset password
+def ResetPassword(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        with open("auth/sql/reset_password/get_password_reset_token.sql", "r") as file:
+            query1 = file.read()
+
+        cursor.execute(query1, (data.token,))
+        reset_token = cursor.fetchone()
+
+        if not reset_token:
+            return {
+                "message": "Invalid or expired reset link",
+                "success": False
+            }
+
+        user_id, expires_at = reset_token
+
+        if expires_at <= datetime.utcnow():
+            return {
+                "message": "Invalid or expired reset link",
+                "success": False
+            }
+
+        hashed_password = password_hash.hash(data.new_password)
+
+        with open("auth/sql/reset_password/update_password.sql", "r") as file:
+            query2 = file.read()
+
+        cursor.execute(query2, (hashed_password, user_id))
+
+        with open("auth/sql/reset_password/delete_password_reset_token.sql", "r") as file:
+            query3 = file.read()
+
+        cursor.execute(query3, (data.token,))
+
+        connection.commit()
+
+        return {
+            "message": "Password reset successfully",
+            "success": True
+        }
+    except Exception as error:
+        print(str(error))
+        return {
+            "message": str(error),
+            "success": False
+        }
+
+    finally:
+        cursor.close()
+        connection.close()
