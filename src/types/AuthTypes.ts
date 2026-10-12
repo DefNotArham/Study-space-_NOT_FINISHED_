@@ -43,5 +43,5 @@ export type AuthStore = {
   resetPassword: (
     newPassword: string,
     confirmNewPassword: string,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };

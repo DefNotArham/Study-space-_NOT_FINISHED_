@@ -286,5 +286,76 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  resetPassword: async (newPassword: string, confirmNewPassword: string) => {},
+  resetPassword: async (newPassword: string, confirmNewPassword: string) => {
+    if (!newPassword || !confirmNewPassword) {
+      set({ resetPasswordError: "Please fill in all fields" });
+
+      setInterval(() => {
+        set({ resetPasswordError: null });
+      }, 3000);
+
+      return false;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      set({ resetPasswordError: "Passwords do not match" });
+
+      setTimeout(() => {
+        set({ resetPasswordError: null });
+      }, 3000);
+
+      return false;
+    }
+
+    set({ resetPasswordLoading: true, resetPasswordError: null });
+
+    try {
+      const token = new URLSearchParams(window.location.search).get("token");
+
+      if (!token) {
+        set({
+          resetPasswordError: "Invalid or missing reset link",
+          resetPasswordLoading: false,
+        });
+
+        return false;
+      }
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token,
+            new_password: newPassword,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          resetPasswordError: data.message || "Something went wrong",
+          resetPasswordLoading: false,
+        });
+
+        return false;
+      }
+
+      set({ resetPasswordError: null, resetPasswordLoading: false });
+      return true;
+    } catch (error) {
+      console.log(error);
+
+      set({
+        resetPasswordError: "Something went wrong",
+        resetPasswordLoading: false,
+      });
+      return false;
+    }
+  },
 }));
