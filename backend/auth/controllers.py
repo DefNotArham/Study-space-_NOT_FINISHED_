@@ -59,7 +59,9 @@ def register(data):
 
     except Exception as error:
         print(str(error))
-        connection.rollback()
+        if connection:
+            connection.rollback()
+
         return {"message": str(error), "success": False}
 
     finally:
@@ -104,7 +106,8 @@ def login(data):
 
     except Exception as error:
         print(str(error))
-        connection.rollback()
+        if connection:
+            connection.rollback()
 
         return {"message": str(error), "success": False}
     finally:
@@ -190,6 +193,9 @@ def get_current_user(token):
 
     except Exception as error:
         print(error)
+        if connection:
+            connection.rollback()
+
         return {"message": str(error), "success": False}
 
     
@@ -239,6 +245,9 @@ def ForgotPassword(data):
 
     except Exception as error:
         print(error)
+        if connection:
+            connection.rollback()
+            
         return {"message": str(error), "success": False}
 
     finally:
@@ -290,9 +299,13 @@ def ResetPassword(data):
             "success": True
         }
     except Exception as error:
-        print(str(error))
+        print(f"Reset password error: {error}")
+
+        if connection:
+            connection.rollback()
+
         return {
-            "message": str(error),
+            "message": "Something went wrong",
             "success": False
         }
 
