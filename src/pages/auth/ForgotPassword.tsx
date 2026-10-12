@@ -21,8 +21,11 @@ export default function ForgotPassword() {
     e.preventDefault();
 
     try {
-      await forgotPassword(email);
-      setSubmitted(true);
+      const success = await forgotPassword(email);
+
+      if (success) {
+        setSubmitted(true);
+      }
     } catch (error) {
       console.log(error);
     }
