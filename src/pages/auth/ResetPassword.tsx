@@ -74,8 +74,11 @@ export default function ResetPassword() {
     e.preventDefault();
 
     try {
-      await resetPassword(newPassword, confirmPassword);
-      navigate("/");
+      const success = await resetPassword(newPassword, confirmPassword);
+
+      if (success) {
+        navigate("/login");
+      }
     } catch (error) {
       console.log(error);
     }
