@@ -95,14 +95,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
           email,
           username,
           password,
-          confirmPassword,
+          confirm_password: confirmPassword,
         }),
       });
 
       const data = await response.json();
 
-      if (!data.success) {
-        set({ registerError: data.message, registerLoading: false });
+      if (!response.ok || !data.success) {
+        set({
+          registerError: data.message || "Invalid registration details",
+          registerLoading: false,
+        });
 
         setTimeout(() => {
           set({ registerError: null });

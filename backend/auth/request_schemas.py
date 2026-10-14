@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 import re
 
 def validatePassword(password: str) -> str:
@@ -26,8 +26,14 @@ class RegisterRequest(BaseModel):
 
     @field_validator("password", "confirm_password")
     @classmethod
-    def check_password(cls, value:str)-> str:
+    def check_password(cls, value: str) -> str:
         return validatePassword(value)
+
+    @model_validator(mode="after")
+    def check_match_passwords(self):
+        if self.password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
 
 # Login
 
@@ -50,3 +56,14 @@ class ResetPasswordRequest(BaseModel):
     token: str = Field(min_length=1)
     new_password: str = Field(min_length=8)
     confirm_password: str = Field(min_length=8)
+
+    @field_validator("new_password", "confirm_password")
+    @classmethod
+    def check_password(cls, value: str) -> str:
+        return validatePassword(value)
+
+    @model_validator(mode="after")
+    def check_match_passwords(self):
+        if self.new_password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
