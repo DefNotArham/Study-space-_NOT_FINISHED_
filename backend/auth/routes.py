@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 
-from .schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, ForgotPasswordRequest, ResetPasswordRequest
+from .request_schemas import RegisterRequest, LoginRequest, VerifyEmailRequest, ForgotPasswordRequest, ResetPasswordRequest
 from .controllers import register, login, verifyEmail, get_current_user, ForgotPassword, ResetPassword
 
 router = APIRouter()
