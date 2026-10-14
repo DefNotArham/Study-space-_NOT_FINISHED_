@@ -22,7 +22,12 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     username: str = Field(min_length=1)
     password: str = Field(min_length=8)
-    confirmPassword: str = Field(min_length=8)
+    confirm_password: str = Field(min_length=8)
+
+    @field_validator("password", "confirm_password")
+    @classmethod
+    def check_password(cls, value:str)-> str:
+        return validatePassword(value)
 
 # Login
 
@@ -44,3 +49,4 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     token: str = Field(min_length=1)
     new_password: str = Field(min_length=8)
+    confirm_password: str = Field(min_length=8)

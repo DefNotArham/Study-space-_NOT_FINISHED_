@@ -335,6 +335,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
           body: JSON.stringify({
             token,
             new_password: newPassword,
+            confirm_password: confirmNewPassword,
           }),
         },
       );
