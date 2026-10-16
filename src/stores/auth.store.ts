@@ -370,7 +370,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
                 )[0]
             : typeof data.detail === "string"
               ? data.detail
-              : "Invalid registration details");
+              : "Something went wrong");
         set({
           resetPasswordError: errorMessage,
           resetPasswordLoading: false,
