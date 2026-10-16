@@ -275,6 +275,12 @@ def ResetPassword(data):
         user_id, expires_at = reset_token
 
         if expires_at <= datetime.utcnow():
+            with open("auth/sql/reset_password/delete_password_reset_token.sql", "r") as file:
+                query = file.read()
+
+            cursor.execute(query, (data.token,))
+            connection.commit()
+
             return {
                 "message": "Invalid or expired reset link",
                 "success": False
