@@ -17,6 +17,13 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const passwordChecks = [
+    { label: "At least 8 characters", valid: password.length >= 8 },
+    { label: "One uppercase letter", valid: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", valid: /[a-z]/.test(password) },
+    { label: "One number", valid: /\d/.test(password) },
+  ];
+
   const register = useAuthStore((s) => s.register);
   const registerError = useAuthStore((s) => s.registerError);
   const registerLoading = useAuthStore((s) => s.registerLoading);
@@ -86,6 +93,22 @@ export default function Register() {
               onChange={setPassword}
               autoComplete="new-password"
             />
+
+            {password && (
+              <div className="space-y-1.5 px-1 text-xs">
+                {passwordChecks.map((check) => (
+                  <p
+                    key={check.label}
+                    className={
+                      check.valid ? "text-green-400" : "text-[#8A7B6C]"
+                    }
+                  >
+                    {check.valid ? "✓" : "○"} {check.label}
+                  </p>
+                ))}
+              </div>
+            )}
+
             <Input
               id="register-confirm-password"
               label="Confirm password"
