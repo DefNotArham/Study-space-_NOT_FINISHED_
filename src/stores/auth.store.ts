@@ -300,7 +300,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  resetPassword: async (newPassword: string, confirmNewPassword: string) => {
+  resetPassword: async (
+    token: string,
+    newPassword: string,
+    confirmNewPassword: string,
+  ) => {
     if (!newPassword || !confirmNewPassword) {
       set({ resetPasswordError: "Please fill in all fields" });
 

@@ -86,8 +86,10 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!token) return;
+
     try {
-      const success = await resetPassword(newPassword, confirmPassword);
+      const success = await resetPassword(token, newPassword, confirmPassword);
 
       if (success) {
         navigate("/login");

@@ -41,6 +41,7 @@ export type AuthStore = {
 
   forgotPassword: (email: string) => Promise<boolean>;
   resetPassword: (
+    token: string,
     newPassword: string,
     confirmNewPassword: string,
   ) => Promise<boolean>;
