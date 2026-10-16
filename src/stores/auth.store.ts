@@ -102,14 +102,25 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
+        const errorMessage =
+          data.message ||
+          (Array.isArray(data.detail)
+            ? data.detail
+                .map((error: { msg: string }) =>
+                  error.msg.replace("Value error, ", ""),
+                )
+                .filter(
+                  (msg: string, index: number, arr: string[]) =>
+                    arr.indexOf(msg) === index,
+                )[0]
+            : typeof data.detail === "string"
+              ? data.detail
+              : "Invalid registration details");
+
         set({
-          registerError: data.message || "Invalid registration details",
+          registerError: errorMessage,
           registerLoading: false,
         });
-
-        setTimeout(() => {
-          set({ registerError: null });
-        }, 3000);
 
         return false;
       }
@@ -346,8 +357,22 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
+        const errorMessage =
+          data.message ||
+          (Array.isArray(data.detail)
+            ? data.detail
+                .map((error: { msg: string }) =>
+                  error.msg.replace("Value error, ", ""),
+                )
+                .filter(
+                  (msg: string, index: number, arr: string[]) =>
+                    arr.indexOf(msg) === index,
+                )[0]
+            : typeof data.detail === "string"
+              ? data.detail
+              : "Invalid registration details");
         set({
-          resetPasswordError: data.message || "Something went wrong",
+          resetPasswordError: errorMessage,
           resetPasswordLoading: false,
         });
 
