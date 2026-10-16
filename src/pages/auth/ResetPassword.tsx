@@ -64,6 +64,13 @@ export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const passwordChecks = [
+    { label: "At least 8 characters", valid: newPassword.length >= 8 },
+    { label: "One uppercase letter", valid: /[A-Z]/.test(newPassword) },
+    { label: "One lowercase letter", valid: /[a-z]/.test(newPassword) },
+    { label: "One number", valid: /\d/.test(newPassword) },
+  ];
+
   const resetPassword = useAuthStore((s) => s.resetPassword);
   const resetPasswordError = useAuthStore((s) => s.resetPasswordError);
   const resetPasswordLoading = useAuthStore((s) => s.resetPasswordLoading);
@@ -115,6 +122,21 @@ export default function ResetPassword() {
               autoComplete="new-password"
               onChange={(e) => setNewPassword(e.target.value)}
             />
+
+            {newPassword && (
+              <div className="space-y-1.5 px-1 text-xs">
+                {passwordChecks.map((check) => (
+                  <p
+                    key={check.label}
+                    className={
+                      check.valid ? "text-green-400" : "text-[#8A7B6C]"
+                    }
+                  >
+                    {check.valid ? "✓" : "○"} {check.label}
+                  </p>
+                ))}
+              </div>
+            )}
 
             <PasswordField
               id="reset-password-confirm"
