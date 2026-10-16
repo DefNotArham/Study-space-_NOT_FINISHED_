@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LockIcon, EyeIcon } from "../../components/icons/icons";
@@ -77,6 +78,11 @@ export default function ResetPassword() {
 
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+
+  const hasToken = Boolean(token);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -115,63 +121,78 @@ export default function ResetPassword() {
             Choose a new password for your account.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <PasswordField
-              id="reset-password-new"
-              label="New password"
-              autoComplete="new-password"
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
+          {hasToken ? (
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <PasswordField
+                id="reset-password-new"
+                label="New password"
+                autoComplete="new-password"
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
 
-            {newPassword && (
-              <div className="space-y-1.5 px-1 text-xs">
-                {passwordChecks.map((check) => (
-                  <p
-                    key={check.label}
-                    className={
-                      check.valid ? "text-green-400" : "text-[#8A7B6C]"
-                    }
-                  >
-                    {check.valid ? "✓" : "○"} {check.label}
-                  </p>
-                ))}
-              </div>
-            )}
+              {newPassword && (
+                <div className="space-y-1.5 px-1 text-xs">
+                  {passwordChecks.map((check) => (
+                    <p
+                      key={check.label}
+                      className={
+                        check.valid ? "text-green-400" : "text-[#8A7B6C]"
+                      }
+                    >
+                      {check.valid ? "✓" : "○"} {check.label}
+                    </p>
+                  ))}
+                </div>
+              )}
 
-            <PasswordField
-              id="reset-password-confirm"
-              label="Confirm password"
-              autoComplete="new-password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+              <PasswordField
+                id="reset-password-confirm"
+                label="Confirm password"
+                autoComplete="new-password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
 
-            {newPassword !== confirmPassword && confirmPassword && (
-              <p className="text-[13px] text-red-400">
-                Passwords do not match.
-              </p>
-            )}
+              {newPassword !== confirmPassword && confirmPassword && (
+                <p className="text-[13px] text-red-400">
+                  Passwords do not match.
+                </p>
+              )}
 
-            {resetPasswordError && (
-              <p className="text-[13px] text-red-400">{resetPasswordError}</p>
-            )}
+              {resetPasswordError && (
+                <p className="text-[13px] text-red-400">{resetPasswordError}</p>
+              )}
 
-            <button
-              type="submit"
-              disabled={resetPasswordLoading}
-              className="w-full rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[15px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {resetPasswordLoading ? "Resetting..." : "Reset password"}
-            </button>
-
-            <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">
-              <Link
-                to="/login"
-                className="font-medium text-[#E3A567] transition-colors duration-200 hover:text-[#EFC694]"
+              <button
+                type="submit"
+                disabled={resetPasswordLoading}
+                className="w-full rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[15px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Back to login
+                {resetPasswordLoading ? "Resetting..." : "Reset password"}
+              </button>
+
+              <p className="pt-1 text-center text-[13px] text-[#8A7B6C]">
+                <Link
+                  to="/login"
+                  className="font-medium text-[#E3A567] transition-colors duration-200 hover:text-[#EFC694]"
+                >
+                  Back to login
+                </Link>
+              </p>
+            </form>
+          ) : (
+            <div className="mt-6 space-y-4 text-center">
+              <p className="text-[13px] text-red-400">
+                This reset link is missing or invalid. Please request a new one.
+              </p>
+
+              <Link
+                to="/forgot-password"
+                className="font-medium text-[#E3A567] hover:text-[#EFC694]"
+              >
+                Request a new reset link
               </Link>
-            </p>
-          </form>
+            </div>
+          )}
         </div>
 
         <p className="mt-6 text-center text-[12.5px] text-[#6B5D50]">
