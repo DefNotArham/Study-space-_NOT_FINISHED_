@@ -6,7 +6,6 @@ from .controllers import register, login, verifyEmail, get_current_user, ForgotP
 router = APIRouter()
 
 ### Register
-
 @router.post("/register")
 def register_route(data: RegisterRequest):
     return register(data)
