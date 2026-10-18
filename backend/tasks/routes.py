@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from controllers import createTask
-from request_schemas import createTask
+from tasks.controllers import createTask
+from tasks.request_schemas import createTask
 
 router = APIRouter()
 
