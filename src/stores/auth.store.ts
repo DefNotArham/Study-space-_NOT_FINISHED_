@@ -328,8 +328,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ resetPasswordLoading: true, resetPasswordError: null });
 
     try {
-      const token = new URLSearchParams(window.location.search).get("token");
-
       if (!token) {
         set({
           resetPasswordError: "Invalid or missing reset link",
