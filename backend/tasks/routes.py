@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from tasks.controllers import createTask
-from tasks.request_schemas import createTask
+from .controllers import createTask
+from .request_schemas import createTaskRequest
 
 router = APIRouter()
 
 @router.post("/create-task")
-def createTask_route(data: createTask):
+def createTask_route(data: createTaskRequest):
     return createTask(data)

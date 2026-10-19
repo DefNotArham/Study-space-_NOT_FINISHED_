@@ -12,7 +12,9 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskLoading: false,
   deleteTaskLoading: false,
 
-  fetchTasks: async (user) => {},
+  fetchTasks: async (user) => {
+    
+  },
 
   createTask: async (task) => {},
 
