@@ -11,10 +11,13 @@ password_hash = PasswordHash.recommended()
 
 # Register
 def register(data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
         hashed_password = password_hash.hash(data.password)
 
         with open("auth/sql/register.sql", "r") as file:
@@ -65,15 +68,21 @@ def register(data):
         return {"message": str(error), "success": False}
 
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+            
+        if cursor:
+            connection.close()
 
 ## Login
 def login(data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
         with open("auth/sql/login.sql", "r") as file:
             sql = file.read()
 
@@ -110,17 +119,24 @@ def login(data):
             connection.rollback()
 
         return {"message": str(error), "success": False}
+    
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+            
+        if cursor:
+            connection.close()
         
 
 ## Verify email
 def verifyEmail(data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
-    try:
+    try:    
+        connection = get_connection()
+        cursor = connection.cursor()
+
         with open("auth/sql/verify_email/verify_email.sql", "r") as file:
             sql1 = file.read()
 
@@ -152,24 +168,31 @@ def verifyEmail(data):
     except Exception as error:
         print(str(error))
         return {"message": str(error), "success": False}
+    
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+            
+        if cursor:
+            connection.close()
 
 # Get Current User
 
 def get_current_user(token):
-    payload = verify_token(token)
-
-    if not payload:
-        return {"message": "Invalid or expired token", "success": False}
-
-    user_id = payload["user_id"]
-
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
     try: 
+        payload = verify_token(token)
+
+        if not payload:
+            return {"message": "Invalid or expired token", "success": False}
+        
+        user_id = payload["user_id"]
+
+        connection = get_connection()
+        cursor = connection.cursor()
+
         with open("auth/sql/getCurrentUser.sql", "r") as file:
             sql = file.read()
         cursor.execute(
@@ -200,16 +223,22 @@ def get_current_user(token):
 
     
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+            
+        if cursor:
+            connection.close()
 
 ## Forgot password
 
 def ForgotPassword(data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
         with open("auth/sql/forgot_password/forgot_password.sql", "r") as file:
             sql1  = file.read()
 
@@ -251,15 +280,21 @@ def ForgotPassword(data):
         return {"message": str(error), "success": False}
 
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+            
+        if cursor:
+            connection.close()
 
 # Reset password
 def ResetPassword(data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    connection = None
+    cursor = None
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
         with open("auth/sql/reset_password/get_password_reset_token.sql", "r") as file:
             query1 = file.read()
 
@@ -316,5 +351,8 @@ def ResetPassword(data):
         }
 
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+
+        if cursor:
+            connection.close()
