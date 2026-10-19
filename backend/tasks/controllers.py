@@ -1,3 +1,11 @@
+from database.database import get_connection
+
+
 def createTask(data):
-    print("create task endpoint")
+    # connection = get_connection()
+    # cursor = connection.cursor()
+
+    # try:
+    print("hi")
     return
+        
