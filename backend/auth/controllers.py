@@ -50,7 +50,8 @@ def register(data):
         return {"message": "User successfully registered", "success": True}
     
     except UniqueViolation as error:
-        connection.rollback()
+        if connection:
+            connection.rollback()
 
         if "users_email_key" in str(error):
             return {"message": "Email already exists", "success": False}
