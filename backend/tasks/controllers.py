@@ -17,7 +17,11 @@ def createTask(data):
         task_id = cursor.fetchone()[0]
         connection.commit()
 
-        return {"message": "Task created", "success": True, task_id: task_id }
+        return {
+            "message": "Task created",
+            "success": True,
+            "task_id": task_id,
+        }
 
     except Exception as error:
         print(str(error))

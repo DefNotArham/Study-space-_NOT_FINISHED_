@@ -37,6 +37,7 @@ const useTaskStore = create<TaskStore>((set) => ({
       }
 
       set({ createTaskLoading: false });
+
       return true;
     } catch (error) {
       console.error(error);

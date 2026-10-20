@@ -29,5 +29,6 @@ CREATE TABLE IF NOT EXISTS tasks (
     subject TEXT NOT NULL,
     priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high')),
     completed BOOLEAN DEFAULT FALSE,
+    due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
