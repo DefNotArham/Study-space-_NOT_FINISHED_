@@ -12,7 +12,7 @@ def createTask(data):
         with open("tasks/sql/createTask.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql, (data.user_id, data.title, data.description, data.subject, data.priority), )
+        cursor.execute(sql, (data.user_id, data.title, data.description, data.subject, data.priority, data.due_date), )
 
         task_id = cursor.fetchone()[0]
         connection.commit()
