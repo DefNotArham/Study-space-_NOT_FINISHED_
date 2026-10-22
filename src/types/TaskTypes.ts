@@ -15,10 +15,10 @@ export type Task = {
 export type CreateTask = {
   user_id: string;
   title: string;
-  description?: string;
-  subject?: string;
+  description?: string | null;
+  subject: string;
   priority: "low" | "medium" | "high";
-  due_date?: string;
+  due_date?: string | null;
 };
 
 export type TaskStore = {

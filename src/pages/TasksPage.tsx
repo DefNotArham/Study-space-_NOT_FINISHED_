@@ -330,20 +330,27 @@ const TasksPage = () => {
             </div>
 
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
 
                 if (!user) return;
 
-                createTask({
+                const success = await createTask({
                   user_id: String(user.id),
                   title,
-                  description,
+                  description: description || null,
                   subject,
                   priority,
+                  due_date: null,
                 });
 
-                setModalOpen(false);
+                if (success) {
+                  setModalOpen(false);
+                  setTitle("");
+                  setDescription("");
+                  setSubject("");
+                  setPriority("medium");
+                }
               }}
               className="flex flex-col gap-4"
             >
