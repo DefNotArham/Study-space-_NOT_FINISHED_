@@ -14,13 +14,21 @@ def createTask(data):
 
         cursor.execute(sql, (data.user_id, data.title, data.description, data.subject, data.priority, data.due_date), )
 
-        task_id = cursor.fetchone()[0]
+        row = cursor.fetchone()
+        columns = [column[0] for column in cursor.description]
+        task = dict(zip(columns, row))
+
         connection.commit()
+
+        task["due_date"] = (task["due_date"].isoformat() if task["due_date"] else None)
+        task["created_at"] = task["created_at"].isoformat()
+
+
 
         return {
             "message": "Task created",
             "success": True,
-            "task_id": task_id,
+            "task": task,
         }
 
     except Exception as error:
