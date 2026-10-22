@@ -36,7 +36,10 @@ const useTaskStore = create<TaskStore>((set) => ({
         return false;
       }
 
-      set({ createTaskLoading: false });
+      set((state) => ({
+        Tasks: [...state.Tasks, data.task],
+        createTaskLoading: false,
+      }));
 
       return true;
     } catch (error) {

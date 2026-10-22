@@ -22,9 +22,7 @@ def createTask(data):
 
         task["due_date"] = (task["due_date"].isoformat() if task["due_date"] else None)
         task["created_at"] = task["created_at"].isoformat()
-
-
-
+        
         return {
             "message": "Task created",
             "success": True,
