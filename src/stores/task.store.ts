@@ -6,13 +6,53 @@ const useTaskStore = create<TaskStore>((set) => ({
 
   // Errors
   createTaskError: null,
+  fetchTasksError: null,
 
   // Loadings
   fetchTasksLoading: false,
   createTaskLoading: false,
   deleteTaskLoading: false,
 
-  fetchTasks: async (user) => {},
+  fetchTasks: async (user_id) => {
+    set({ fetchTasksLoading: true, fetchTasksError: null });
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/tasks/load-task", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user_id),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          fetchTasksLoading: false,
+          fetchTasksError: data.message || "Failed to load tasks",
+        });
+
+        return false;
+      }
+
+      set((state) => ({
+        Tasks: data.tasks,
+        fetchTasksLoading: false,
+      }));
+
+      return true;
+    } catch (error) {
+      console.log(error);
+
+      set({
+        fetchTasksError: "Something went wrong",
+        fetchTasksLoading: false,
+      });
+
+      return false;
+    }
+  },
 
   createTask: async (task) => {
     set({ createTaskLoading: true, createTaskError: null });
