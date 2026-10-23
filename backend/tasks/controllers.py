@@ -42,3 +42,13 @@ def createTask(data):
 
         if connection: 
             connection.close()
+
+def loadTask(data):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        
