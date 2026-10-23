@@ -29,9 +29,6 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       const response = await fetch(
         `http://127.0.0.1:8000/tasks/load-task?user_id=${encodeURIComponent(user_id)}`,
-        {
-          method: "GET",
-        },
       );
 
       const data = await response.json();
@@ -51,7 +48,7 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       return true;
     } catch (error) {
-      console.error(error);
+      console.error("Fetch tasks error:", error);
 
       set({
         fetchTasksError: "Something went wrong",

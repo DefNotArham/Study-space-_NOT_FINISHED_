@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from .controllers import createTask, loadTask
-from .request_schemas import createTaskRequest, loadTaskRequest
+from .request_schemas import createTaskRequest
 
 router = APIRouter()
 
@@ -9,5 +9,5 @@ def createTask_route(data: createTaskRequest):
     return createTask(data)
 
 @router.get("/load-task")
-def loadTask_route(data: loadTaskRequest):
-    return loadTask(data)
+def loadTask_route(user_id: int):
+    return loadTask(user_id)

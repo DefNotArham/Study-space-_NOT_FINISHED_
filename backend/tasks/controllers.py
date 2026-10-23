@@ -43,7 +43,8 @@ def createTask(data):
         if connection: 
             connection.close()
 
-def loadTask(data):
+
+def loadTask(user_id: int):
     connection = None
     cursor = None
 
@@ -54,25 +55,30 @@ def loadTask(data):
         with open("tasks/sql/loadTasks.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql, (data.user_id,))
+        cursor.execute(sql, (user_id,))
 
-        rows= cursor.fetchone()
+        rows = cursor.fetchall()
         columns = [column[0] for column in cursor.description]
-        tasks = [dict(zip(columns,row)) for row in rows]
+        tasks = [dict(zip(columns, row)) for row in rows]
 
         for task in tasks:
-            task["due_date"] = (task["due_date"].isoformat() if task["due_date"] else None)
+            task["due_date"] = (
+                task["due_date"].isoformat()
+                if task["due_date"]
+                else None
+            )
             task["created_at"] = task["created_at"].isoformat()
 
         return {
             "message": "Tasks loaded",
             "success": True,
-            "tasks": tasks
+            "tasks": tasks,
         }
-    
+
     except Exception as error:
         print(str(error))
-        if connection: 
+
+        if connection:
             connection.rollback()
 
         return {"message": str(error), "success": False}
@@ -80,5 +86,6 @@ def loadTask(data):
     finally:
         if cursor:
             cursor.close()
+
         if connection:
             connection.close()
