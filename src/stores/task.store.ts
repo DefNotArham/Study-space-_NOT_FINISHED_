@@ -13,17 +13,26 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskLoading: false,
   deleteTaskLoading: false,
 
-  fetchTasks: async (user_id) => {
+  fetchTasks: async () => {
     set({ fetchTasksLoading: true, fetchTasksError: null });
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/tasks/load-task", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      const user_id = localStorage.getItem("user_id");
+
+      if (!user_id) {
+        set({
+          fetchTasksLoading: false,
+          fetchTasksError: "User ID not found",
+        });
+        return false;
+      }
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/tasks/load-task?user_id=${encodeURIComponent(user_id)}`,
+        {
+          method: "GET",
         },
-        body: JSON.stringify(user_id),
-      });
+      );
 
       const data = await response.json();
 
@@ -32,18 +41,17 @@ const useTaskStore = create<TaskStore>((set) => ({
           fetchTasksLoading: false,
           fetchTasksError: data.message || "Failed to load tasks",
         });
-
         return false;
       }
 
-      set((state) => ({
+      set({
         Tasks: data.tasks,
         fetchTasksLoading: false,
-      }));
+      });
 
       return true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       set({
         fetchTasksError: "Something went wrong",
