@@ -33,7 +33,7 @@ export type TaskStore = {
   createTaskLoading: boolean;
   deleteTaskLoading: boolean;
 
-  fetchTasks: (user_id: string) => Promise<boolean>;
+  fetchTasks: () => Promise<boolean>;
   createTask: (task: CreateTask) => Promise<boolean>;
   deleteTask: (taskId: number) => Promise<void>;
 };

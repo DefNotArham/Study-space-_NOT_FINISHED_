@@ -74,6 +74,10 @@ const TasksPage = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+    fetchTasks();
+  }, [user]);
+
   return (
     <div
       className="relative min-h-screen bg-[#120C09]"
