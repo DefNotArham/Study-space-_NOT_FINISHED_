@@ -10,3 +10,6 @@ class createTaskRequest(BaseModel):
     subject: str
     priority: Literal["low", "medium", "high"]
     due_date: date | None = None
+
+class loadTask(BaseModel):
+    user_id: str
