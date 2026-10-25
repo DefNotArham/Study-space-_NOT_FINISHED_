@@ -17,19 +17,22 @@ const useTaskStore = create<TaskStore>((set) => ({
     set({ fetchTasksLoading: true, fetchTasksError: null });
 
     try {
-      const user_id = localStorage.getItem("user_id");
+      const token = localStorage.getItem("token");
 
-      if (!user_id) {
+      if (!token) {
         set({
           fetchTasksLoading: false,
-          fetchTasksError: "User ID not found",
+          fetchTasksError: "Authentication token not found",
         });
         return false;
       }
 
-      const response = await fetch(
-        `http://127.0.0.1:8000/tasks/load-task?user_id=${encodeURIComponent(user_id)}`,
-      );
+      const response = await fetch("http://127.0.0.1:8000/tasks/load-task", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -51,8 +54,8 @@ const useTaskStore = create<TaskStore>((set) => ({
       console.error("Fetch tasks error:", error);
 
       set({
-        fetchTasksError: "Something went wrong",
         fetchTasksLoading: false,
+        fetchTasksError: "Something went wrong",
       });
 
       return false;
