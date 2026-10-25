@@ -1,4 +1,5 @@
 from database.database import get_connection
+from auth.jwt import verify_token
 
 
 def createTask(data):
@@ -44,7 +45,24 @@ def createTask(data):
             connection.close()
 
 
-def loadTask(user_id: int):
+def loadTask(authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload["user_id"]
+
     connection = None
     cursor = None
 

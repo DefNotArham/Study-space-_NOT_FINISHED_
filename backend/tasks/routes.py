@@ -9,5 +9,5 @@ def createTask_route(data: createTaskRequest):
     return createTask(data)
 
 @router.get("/load-task")
-def loadTask_route(user_id: int):
-    return loadTask(user_id)
+def loadTask_route(authorization: str | None = Header(default=None)):
+    return loadTask(authorization)
