@@ -66,10 +66,21 @@ const useTaskStore = create<TaskStore>((set) => ({
     set({ createTaskLoading: true, createTaskError: null });
 
     try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        set({
+          createTaskLoading: false,
+          createTaskError: "Authorization token not found",
+        });
+        return false;
+      }
+
       const response = await fetch("http://127.0.0.1:8000/tasks/create-task", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(task),
       });
