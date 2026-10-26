@@ -96,7 +96,7 @@ const useTaskStore = create<TaskStore>((set) => ({
       }
 
       set((state) => ({
-        Tasks: [...state.Tasks, data.task],
+        Tasks: [data.task, ...state.Tasks],
         createTaskLoading: false,
       }));
 
