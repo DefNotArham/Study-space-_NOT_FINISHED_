@@ -4,9 +4,8 @@ from datetime import date
 
 
 class createTaskRequest(BaseModel):
-    user_id: str
     title: str
-    description: str
+    description: str | None = None
     subject: str
     priority: Literal["low", "medium", "high"]
     due_date: date | None = None
