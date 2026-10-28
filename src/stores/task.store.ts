@@ -119,15 +119,51 @@ const useTaskStore = create<TaskStore>((set) => ({
     if (!token) {
       return false;
     }
-  },
 
-  try {
-    const response = await fetch(
-      ""
-    )
-  } catch (error) {
-    
-  }
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/tasks/update-task-completed",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            task_id: taskId,
+            completed: completed,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        console.log(data.message || "Failed to update task");
+        return false;
+      }
+
+      set((state) => {
+        return {
+          Tasks: state.Tasks.map((task) => {
+            if (task.id === Number(taskId)) {
+              return {
+                ...task,
+                completed: completed,
+              };
+            } else {
+              return task;
+            }
+          }),
+        };
+      });
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  },
 }));
 
 export default useTaskStore;
