@@ -201,3 +201,72 @@ def updateTaskCompleted(data, authorization):
 
         if connection:
             connection.close()
+
+def deleteTask(data, authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload["user_id"]
+
+    if user_id is None:
+        return {
+            "message": "Invalid token payload",
+            "success": False
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("tasks/sql/deleteTask.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql, (data.task_id, user_id))
+
+        row = cursor.fetchone()
+
+        if not row:
+            connection.rollback()
+
+            return {
+                "message": "Task not found",
+                "success": False
+            }
+
+        connection.commit()
+
+        return {
+            "message": "Task deleted successfully",
+            "success": True
+        }
+
+    except Exception as error:
+        print(str(error))
+
+        if connection:
+            connection.rollback()
+
+        return {
+            "message": "Failed to delete task", 
+            "success": False
+        }
+    
+    finally:
+        cursor.close()
+        connection.close()
+        
