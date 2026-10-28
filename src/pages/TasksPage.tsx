@@ -63,6 +63,7 @@ const TasksPage = () => {
   const createTask = useTaskStore((s) => s.createTask);
   // const createTaskLoading = useTaskStore((s) => s.createTaskLoading);
   const createTaskError = useTaskStore((s) => s.createTaskError);
+  const updateTaskCompleted = useTaskStore((s) => s.updateTaskCompleted);
 
   // Inputs
   const [title, setTitle] = useState("");
@@ -218,8 +219,15 @@ const TasksPage = () => {
                         className="flex items-start gap-3 px-5 py-4 first:pt-4 last:pb-4"
                       >
                         {completed !== undefined && (
-                          <span
-                            className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateTaskCompleted(task.id, !completed);
+                            }}
+                            aria-label={
+                              completed ? "Mark as not done" : "Mark as done"
+                            }
+                            className={`cursor-pointer mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
                               completed
                                 ? "border-[#E3A567] bg-[#E3A567]"
                                 : "border-[#4A392C] bg-transparent"
@@ -240,7 +248,7 @@ const TasksPage = () => {
                                 />
                               </svg>
                             )}
-                          </span>
+                          </button>
                         )}
 
                         <div className="min-w-0 flex-1">

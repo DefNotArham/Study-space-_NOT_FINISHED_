@@ -120,6 +120,21 @@ const useTaskStore = create<TaskStore>((set) => ({
       return false;
     }
 
+    const previousTasks = useTaskStore.getState().Tasks;
+
+    set((state) => ({
+      Tasks: state.Tasks.map((task) => {
+        if (task.id === Number(taskId)) {
+          return {
+            ...task,
+            completed: completed,
+          };
+        }
+
+        return task;
+      }),
+    }));
+
     try {
       const response = await fetch(
         "http://127.0.0.1:8000/tasks/update-task-completed",
@@ -130,7 +145,7 @@ const useTaskStore = create<TaskStore>((set) => ({
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            task_id: taskId,
+            task_id: Number(taskId),
             completed: completed,
           }),
         },
@@ -139,28 +154,23 @@ const useTaskStore = create<TaskStore>((set) => ({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        console.log(data.message || "Failed to update task");
+        console.error(data.message || "Failed to update task completion");
+
+        set({
+          Tasks: previousTasks,
+        });
+
         return false;
       }
 
-      set((state) => {
-        return {
-          Tasks: state.Tasks.map((task) => {
-            if (task.id === Number(taskId)) {
-              return {
-                ...task,
-                completed: completed,
-              };
-            } else {
-              return task;
-            }
-          }),
-        };
-      });
-
       return true;
     } catch (error) {
-      console.log(error);
+      console.error("Update task completion error:", error);
+
+      set({
+        Tasks: previousTasks,
+      });
+
       return false;
     }
   },
