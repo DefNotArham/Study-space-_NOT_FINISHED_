@@ -13,3 +13,6 @@ class createTaskRequest(BaseModel):
 class updateTaskCompletedRequest(BaseModel):
     task_id: int
     completed: bool
+
+class deleteTaskRequest(BaseModel):
+    task_id: int
