@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
-from .controllers import createTask, loadTask
-from .request_schemas import createTaskRequest
+from .controllers import createTask, loadTask, updateTaskCompleted
+from .request_schemas import createTaskRequest, updateTaskCompletedRequest
 
 router = APIRouter()
 
@@ -11,3 +11,7 @@ def createTask_route(data: createTaskRequest, authorization: str | None = Header
 @router.get("/load-task")
 def loadTask_route(authorization: str | None = Header(default=None)):
     return loadTask(authorization)
+
+@router.patch("/update-task-completed")
+def updateTaskCompleted_route(data: updateTaskCompletedRequest, authorization: str | None = Header(default=None)):
+    return updateTaskCompleted(data, authorization)

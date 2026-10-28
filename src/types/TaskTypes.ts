@@ -36,4 +36,5 @@ export type TaskStore = {
   fetchTasks: () => Promise<boolean>;
   createTask: (task: CreateTask) => Promise<boolean>;
   deleteTask: (taskId: number) => Promise<void>;
+  updateTaskCompleted: (taskId: string, completed: boolean) => Promise<boolean>;
 };

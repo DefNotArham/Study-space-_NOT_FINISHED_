@@ -9,3 +9,7 @@ class createTaskRequest(BaseModel):
     subject: str
     priority: Literal["low", "medium", "high"]
     due_date: date | None = None
+
+class updateTaskCompletedRequest(BaseModel): 
+    task_id: str
+    completed: bool

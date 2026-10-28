@@ -112,6 +112,22 @@ const useTaskStore = create<TaskStore>((set) => ({
   },
 
   deleteTask: async (taskId) => {},
+
+  updateTaskCompleted: async (taskId, completed) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return false;
+    }
+  },
+
+  try {
+    const response = await fetch(
+      ""
+    )
+  } catch (error) {
+    
+  }
 }));
 
 export default useTaskStore;
