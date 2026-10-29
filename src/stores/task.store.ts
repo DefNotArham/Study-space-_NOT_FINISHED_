@@ -7,6 +7,7 @@ const useTaskStore = create<TaskStore>((set) => ({
   // Errors
   createTaskError: null,
   fetchTasksError: null,
+  deleteTaskError: null,
 
   // Loadings
   fetchTasksLoading: false,
@@ -111,7 +112,68 @@ const useTaskStore = create<TaskStore>((set) => ({
     }
   },
 
-  deleteTask: async (taskId) => {},
+  deleteTask: async (taskId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      set({
+        deleteTaskError: "Authentication token not found",
+      });
+
+      return false;
+    }
+
+    set({ deleteTaskLoading: true, deleteTaskError: null });
+
+    const previousTasks = useTaskStore.getState().Tasks;
+
+    set((state) => ({
+      Tasks: state.Tasks.filter((task) => {
+        return task.id === taskId;
+      }),
+    }));
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/tasks/delete-task", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          task_id: Number(taskId),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          Tasks: previousTasks,
+          deleteTaskLoading: false,
+          deleteTaskError: data.message || "Failed to delete task",
+        });
+
+        return false;
+      }
+
+      set({
+        deleteTaskLoading: false,
+      });
+
+      return true;
+    } catch (error) {
+      console.log(error);
+
+      set({
+        Tasks: previousTasks,
+        deleteTaskLoading: false,
+        deleteTaskError: "Something went wrong while deleting the task",
+      });
+
+      return false;
+    }
+  },
 
   updateTaskCompleted: async (taskId, completed) => {
     const token = localStorage.getItem("token");
