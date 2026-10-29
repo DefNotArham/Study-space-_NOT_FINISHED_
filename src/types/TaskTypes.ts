@@ -28,14 +28,17 @@ export type TaskStore = {
   createTaskError: string | null;
   fetchTasksError: string | null;
   deleteTaskError: string | null;
+  editTaskError: string | null;
 
   // Loadings
   fetchTasksLoading: boolean;
   createTaskLoading: boolean;
   deleteTaskLoading: boolean;
+  editTaskLoading: boolean;
 
   fetchTasks: () => Promise<boolean>;
   createTask: (task: CreateTask) => Promise<boolean>;
   deleteTask: (taskId: number) => Promise<boolean>;
   updateTaskCompleted: (taskId: number, completed: boolean) => Promise<boolean>;
+  editTask: (taskid: number) => Promise<boolean>;
 };

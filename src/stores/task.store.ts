@@ -8,11 +8,13 @@ const useTaskStore = create<TaskStore>((set) => ({
   createTaskError: null,
   fetchTasksError: null,
   deleteTaskError: null,
+  editTaskError: null,
 
   // Loadings
   fetchTasksLoading: false,
   createTaskLoading: false,
   deleteTaskLoading: false,
+  editTaskLoading: false,
 
   fetchTasks: async () => {
     set({ fetchTasksLoading: true, fetchTasksError: null });
@@ -236,6 +238,8 @@ const useTaskStore = create<TaskStore>((set) => ({
       return false;
     }
   },
+
+  editTask: async (taskid) => {},
 }));
 
 export default useTaskStore;
