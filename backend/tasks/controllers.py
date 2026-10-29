@@ -294,4 +294,54 @@ def editTask(data, authorization):
             "success": False
         }
 
-    # try:
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("tasks/sql/editTask.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql,(data.title,data.description,data.subject,data.priority,data.due_date,data.task_id,user_id))
+
+        row = cursor.fetchone()
+
+        if not row:
+            connection.rollback()
+            return {
+                "message": "Task not found",
+                "success": False
+            }
+
+        columns = [column[0] for column in cursor.description]
+        task = dict(zip(columns, row))
+        
+        connection.commit()
+
+        task["due_date"] = (
+            task["due_date"].isoformat()
+            if task["due_date"]
+            else None
+        )
+
+        task["created_at"] = task["created_at"].isoformat()
+
+        return {
+            "message": "Task updated successfully",
+            "success": True,
+            "task": task
+        }
+    
+    except Exception as error:
+        print(str(error))
+
+        if connection:
+            connection.rollback()
+
+        return {
+            "message": "Failed to delete task", 
+            "success": False
+        }
+    
+    finally:
+        cursor.close()
+        connection.close()
