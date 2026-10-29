@@ -69,6 +69,9 @@ const TasksPage = () => {
   // const createTaskLoading = useTaskStore((s) => s.createTaskLoading);
   const createTaskError = useTaskStore((s) => s.createTaskError);
   const updateTaskCompleted = useTaskStore((s) => s.updateTaskCompleted);
+  const deleteTask = useTaskStore((s) => s.deleteTask);
+  const deleteTaskLoading = useTaskStore((s) => s.deleteTaskLoading);
+  const deleteTaskError = useTaskStore((s) => s.deleteTaskError);
 
   // Inputs
   const [title, setTitle] = useState("");
@@ -303,9 +306,27 @@ const TasksPage = () => {
                             )}
                           </div>
                         </div>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await deleteTask(task.id);
+                          }}
+                          disabled={deleteTaskLoading}
+                          aria-label={`Delete ${task.title}`}
+                          title="Delete task"
+                          className="mt-0.5 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] transition-colors hover:bg-[#C2694A]/15 hover:text-[#D98A78] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
                       </li>
                     );
                   })}
+
+                  {deleteTaskError && (
+                    <p className="px-5 py-3 text-[12.5px] text-[#D98A78]">
+                      {deleteTaskError}
+                    </p>
+                  )}
                 </ul>
               )}
             </Card>
