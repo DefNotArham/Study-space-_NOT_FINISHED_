@@ -3,7 +3,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 import useTaskStore from "../stores/task.store";
 
-import { PlusIcon, CloseIcon, ChecklistIcon } from "../components/icons/icons";
+import {
+  PlusIcon,
+  CloseIcon,
+  ChecklistIcon,
+  TrashIcon,
+} from "../components/icons/icons";
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
