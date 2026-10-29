@@ -78,6 +78,7 @@ const TasksPage = () => {
   const [description, setDescription] = useState("");
   const [subject, setSubject] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [dueDate, setDueDate] = useState("");
 
   // UI-only state — not part of the data/auth logic.
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -373,15 +374,15 @@ const TasksPage = () => {
                   description: description || null,
                   subject,
                   priority,
-                  due_date: null,
+                  due_date: dueDate || null,
                 });
-
                 if (success) {
                   setModalOpen(false);
                   setTitle("");
                   setDescription("");
                   setSubject("");
                   setPriority("medium");
+                  setDueDate("");
                 }
               }}
               className="flex flex-col gap-4"
@@ -453,6 +454,24 @@ const TasksPage = () => {
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
                 </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="task-due-date"
+                  className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]"
+                >
+                  Due date
+                </label>
+
+                <input
+                  id="task-due-date"
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  min={new Date().toLocaleDateString("en-CA")}
+                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] outline-none transition-colors focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
+                />
               </div>
 
               {createTaskError && (

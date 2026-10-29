@@ -269,4 +269,29 @@ def deleteTask(data, authorization):
     finally:
         cursor.close()
         connection.close()
-        
+
+def editTask(data, authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload.get("user_id")
+
+    if user_id is None:
+        return {
+            "message": "Invalid token payload",
+            "success": False
+        }
+
+    # try:

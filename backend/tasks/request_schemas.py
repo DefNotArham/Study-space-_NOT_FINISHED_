@@ -16,3 +16,12 @@ class updateTaskCompletedRequest(BaseModel):
 
 class deleteTaskRequest(BaseModel):
     task_id: int
+
+
+class editTaskRequest(BaseModel):
+    task_id: int
+    title: str
+    description: str | None
+    subject: str
+    priority: Literal["low", "medium", "high"]
+    due_date: date | None
