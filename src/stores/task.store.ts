@@ -129,7 +129,7 @@ const useTaskStore = create<TaskStore>((set) => ({
 
     set((state) => ({
       Tasks: state.Tasks.filter((task) => {
-        return task.id === taskId;
+        return task.id !== taskId;
       }),
     }));
 
