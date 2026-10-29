@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
-from .controllers import createTask, loadTask, updateTaskCompleted, deleteTask
-from .request_schemas import createTaskRequest, updateTaskCompletedRequest, deleteTaskRequest
+from .controllers import createTask, loadTask, updateTaskCompleted, deleteTask, editTask
+from .request_schemas import createTaskRequest, updateTaskCompletedRequest, deleteTaskRequest, editTaskRequest
 
 router = APIRouter()
 
@@ -19,3 +19,7 @@ def updateTaskCompleted_route(data: updateTaskCompletedRequest, authorization: s
 @router.delete("/delete-task")
 def deleteTask_route(data: deleteTaskRequest, authorization: str | None = Header(default=None)):
     return deleteTask(data, authorization)
+
+@router.patch("/edit-task")
+def editTask_route(data: editTaskRequest, authorization: str | None = Header(default=None)):
+    return editTask(data, authorization)
