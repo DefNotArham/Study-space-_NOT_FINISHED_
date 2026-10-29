@@ -21,6 +21,15 @@ export type CreateTask = {
   due_date?: string | null;
 };
 
+export type EditTask = {
+  task_id: number;
+  title: string;
+  description: string | null;
+  subject: string;
+  priority: "low" | "medium" | "high";
+  due_date: string | null;
+};
+
 export type TaskStore = {
   Tasks: Task[];
 
@@ -40,5 +49,5 @@ export type TaskStore = {
   createTask: (task: CreateTask) => Promise<boolean>;
   deleteTask: (taskId: number) => Promise<boolean>;
   updateTaskCompleted: (taskId: number, completed: boolean) => Promise<boolean>;
-  editTask: (taskid: number) => Promise<boolean>;
+  editTask: (task: EditTask) => Promise<boolean>;
 };

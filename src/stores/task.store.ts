@@ -239,7 +239,68 @@ const useTaskStore = create<TaskStore>((set) => ({
     }
   },
 
-  editTask: async (taskid) => {},
+  editTask: async (task) => {
+    set({
+      editTaskLoading: true,
+      editTaskError: null,
+    });
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        set({
+          editTaskLoading: false,
+          editTaskError: "Authentication token not found",
+        });
+
+        return false;
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/tasks/edit-task", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(task),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          editTaskLoading: false,
+          editTaskError: data.message || "Failed to edit task",
+        });
+
+        return false;
+      }
+
+      set((state) => ({
+        Tasks: state.Tasks.map((existingTask) => {
+          if (existingTask.id === data.task.id) {
+            return data.task;
+          }
+
+          return existingTask;
+        }),
+        editTaskLoading: false,
+        editTaskError: null,
+      }));
+
+      return true;
+    } catch (error) {
+      console.error("Edit task error:", error);
+
+      set({
+        editTaskLoading: false,
+        editTaskError: "Something went wrong while editing the task",
+      });
+
+      return false;
+    }
+  },
 }));
 
 export default useTaskStore;

@@ -20,6 +20,6 @@ def updateTaskCompleted_route(data: updateTaskCompletedRequest, authorization: s
 def deleteTask_route(data: deleteTaskRequest, authorization: str | None = Header(default=None)):
     return deleteTask(data, authorization)
 
-@router.patch("/edit-task")
+@router.put("/edit-task")
 def editTask_route(data: editTaskRequest, authorization: str | None = Header(default=None)):
     return editTask(data, authorization)
