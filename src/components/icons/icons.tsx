@@ -260,3 +260,12 @@ export function TrashIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function EditIcon({ className }: IconProps) {
+  return (
+    <svg {...iconBase} className={className}>
+      <path d="M4.5 19.5v-3.2L16.3 4.5a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L7.7 19.5Z" />
+      <path d="M14.5 6.5l3 3" />
+    </svg>
+  );
+}

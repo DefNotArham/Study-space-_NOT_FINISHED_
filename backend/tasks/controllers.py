@@ -294,6 +294,9 @@ def editTask(data, authorization):
             "success": False
         }
 
+    connection = None
+    cursor = None
+
     try:
         connection = get_connection()
         cursor = connection.cursor()
@@ -338,10 +341,13 @@ def editTask(data, authorization):
             connection.rollback()
 
         return {
-            "message": "Failed to delete task", 
+            "message": "Failed to edit task", 
             "success": False
         }
     
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()

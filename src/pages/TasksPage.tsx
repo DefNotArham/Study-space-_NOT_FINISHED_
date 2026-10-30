@@ -1,6 +1,5 @@
 import { useAuthStore } from "../stores/auth.store";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import useTaskStore from "../stores/task.store";
 
 import {
@@ -8,6 +7,7 @@ import {
   CloseIcon,
   ChecklistIcon,
   TrashIcon,
+  EditIcon,
 } from "../components/icons/icons";
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
@@ -26,16 +26,23 @@ const PRIORITY_STYLES: Record<
 function getDueDate(task: unknown): string | undefined {
   const t = task as Record<string, unknown>;
   const raw = t.due_date ?? t.dueDate ?? t.due;
+
   if (!raw) return undefined;
+
   const date = new Date(raw as string);
+
   return Number.isNaN(date.getTime())
     ? String(raw)
-    : date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    : date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      });
 }
 
 function getCompleted(task: unknown): boolean | undefined {
   const t = task as Record<string, unknown>;
   const value = t.completed ?? t.is_completed;
+
   return typeof value === "boolean" ? value : undefined;
 }
 
@@ -65,10 +72,16 @@ const TasksPage = () => {
   const tasks = useTaskStore((s) => s.Tasks);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
   const fetchTasksLoading = useTaskStore((s) => s.fetchTasksLoading);
+
   const createTask = useTaskStore((s) => s.createTask);
-  // const createTaskLoading = useTaskStore((s) => s.createTaskLoading);
   const createTaskError = useTaskStore((s) => s.createTaskError);
+
+  const editTask = useTaskStore((s) => s.editTask);
+  const editTaskLoading = useTaskStore((s) => s.editTaskLoading);
+  const editTaskError = useTaskStore((s) => s.editTaskError);
+
   const updateTaskCompleted = useTaskStore((s) => s.updateTaskCompleted);
+
   const deleteTask = useTaskStore((s) => s.deleteTask);
   const deleteTaskLoading = useTaskStore((s) => s.deleteTaskLoading);
   const deleteTaskError = useTaskStore((s) => s.deleteTaskError);
@@ -79,8 +92,9 @@ const TasksPage = () => {
   const [subject, setSubject] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
 
-  // UI-only state — not part of the data/auth logic.
+  // UI state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -88,34 +102,104 @@ const TasksPage = () => {
     fetchTasks();
   }, [user]);
 
+  // Reset form fields
+  const resetForm = () => {
+    setEditingTaskId(null);
+    setTitle("");
+    setDescription("");
+    setSubject("");
+    setPriority("medium");
+    setDueDate("");
+  };
+
+  // Open modal for adding a task
+  const openAddModal = () => {
+    resetForm();
+    setModalOpen(true);
+  };
+
+  // Open modal for editing a task
+  const openEditModal = (task: (typeof tasks)[number]) => {
+    setEditingTaskId(task.id);
+    setTitle(task.title);
+    setDescription(task.description ?? "");
+    setSubject(task.subject ?? "");
+    setPriority(task.priority);
+    setDueDate(task.due_date ? task.due_date.slice(0, 10) : "");
+    setModalOpen(true);
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setModalOpen(false);
+    resetForm();
+  };
+
+  // Submit form
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!user) return;
+
+    let success = false;
+
+    if (editingTaskId !== null) {
+      success = await editTask({
+        task_id: editingTaskId,
+        title,
+        description: description || null,
+        subject,
+        priority,
+        due_date: dueDate || null,
+      });
+    } else {
+      success = await createTask({
+        user_id: String(user.id),
+        title,
+        description: description || null,
+        subject,
+        priority,
+        due_date: dueDate || null,
+      });
+    }
+
+    if (success) {
+      closeModal();
+    }
+  };
+
+  const currentError = editingTaskId !== null ? editTaskError : createTaskError;
+
+  const isSubmitting = editingTaskId !== null && editTaskLoading;
+
   return (
     <div
       className="relative min-h-screen bg-[#120C09]"
       style={{ fontFamily: "'Manrope', sans-serif" }}
     >
       <style>{`
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
 
-      ::-webkit-scrollbar-track {
-        background: #120C09;
-      }
+        ::-webkit-scrollbar-track {
+          background: #120C09;
+        }
 
-      ::-webkit-scrollbar-thumb {
-        background: #6B5543;
-        border-radius: 9999px;
-      }
+        ::-webkit-scrollbar-thumb {
+          background: #6B5543;
+          border-radius: 9999px;
+        }
 
-      ::-webkit-scrollbar-thumb:hover {
-        background: #80654D;
-      }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #80654D;
+        }
 
-      * {
-        scrollbar-width: thin;
-        scrollbar-color: #6B5543 #120C09;
-      }
-    `}</style>
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: #6B5543 #120C09;
+        }
+      `}</style>
 
       <LoFiBackground />
 
@@ -128,6 +212,7 @@ const TasksPage = () => {
         {/* Mobile top bar */}
         <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-3 backdrop-blur-sm md:hidden">
           <Logo />
+
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
@@ -147,6 +232,7 @@ const TasksPage = () => {
               onClick={() => setMobileNavOpen(false)}
               className="absolute inset-0 bg-black/60"
             />
+
             <div className="absolute inset-y-0 left-0 w-72 border-r border-[#3A2C22]/70 bg-[#150F0B] px-4 py-6 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
               <div className="mb-2 flex justify-end">
                 <button
@@ -158,6 +244,7 @@ const TasksPage = () => {
                   <CloseIcon className="h-4 w-4" />
                 </button>
               </div>
+
               <SidebarContents />
             </div>
           </div>
@@ -175,6 +262,7 @@ const TasksPage = () => {
                 >
                   Tasks
                 </h1>
+
                 <p className="mt-1 text-[14px] text-[#8A7B6C]">
                   This is where you manage your study tasks.
                 </p>
@@ -182,8 +270,8 @@ const TasksPage = () => {
 
               <button
                 type="button"
-                onClick={() => setModalOpen(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer"
+                onClick={openAddModal}
+                className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0"
               >
                 <PlusIcon className="h-4 w-4" />
                 Add task
@@ -201,12 +289,14 @@ const TasksPage = () => {
                   <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#2A1F17] ring-1 ring-[#E3A567]/25 shadow-[0_0_24px_-4px_rgba(227,165,103,0.45)]">
                     <ChecklistIcon className="h-7 w-7 text-[#E3A567]" />
                   </span>
+
                   <h3
                     className="text-[1.1rem] italic tracking-tight text-[#F3E9DC]"
                     style={{ fontFamily: "'Fraunces', serif" }}
                   >
                     No tasks yet
                   </h3>
+
                   <p className="mt-2 max-w-[320px] text-[13.5px] leading-relaxed text-[#8A7B6C]">
                     You&apos;re all caught up. Add a task to start planning your
                     next study session.
@@ -215,8 +305,9 @@ const TasksPage = () => {
               ) : (
                 <ul className="divide-y divide-[#3A2C22]/60">
                   {tasks.map((task) => {
-                    const dueDate = getDueDate(task);
+                    const formattedDueDate = getDueDate(task);
                     const completed = getCompleted(task);
+
                     const priorityStyle =
                       PRIORITY_STYLES[
                         task.priority as "low" | "medium" | "high"
@@ -236,7 +327,7 @@ const TasksPage = () => {
                             aria-label={
                               completed ? "Mark as not done" : "Mark as done"
                             }
-                            className={`cursor-pointer mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+                            className={`mt-0.5 flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-md border ${
                               completed
                                 ? "border-[#E3A567] bg-[#E3A567]"
                                 : "border-[#4A392C] bg-transparent"
@@ -271,6 +362,7 @@ const TasksPage = () => {
                             >
                               {task.title}
                             </p>
+
                             {task.subject && (
                               <span className="shrink-0 rounded-full border border-[#E3A56755] px-2.5 py-0.5 text-[11.5px] text-[#E3A567]">
                                 {task.subject}
@@ -300,13 +392,28 @@ const TasksPage = () => {
                                 {priorityStyle.label}
                               </span>
                             )}
-                            {dueDate && (
+
+                            {formattedDueDate && (
                               <span className="text-[12.5px] text-[#8A7B6C]">
-                                Due {dueDate}
+                                Due {formattedDueDate}
                               </span>
                             )}
                           </div>
                         </div>
+
+                        {/* Edit button */}
+                        {/* Edit button */}
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(task)}
+                          aria-label={`Edit ${task.title}`}
+                          title="Edit task"
+                          className="mt-0.5 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] transition-colors hover:bg-[#E3A567]/15 hover:text-[#E3A567]"
+                        >
+                          <EditIcon className="h-4 w-4" />
+                        </button>
+
+                        {/* Delete button */}
                         <button
                           type="button"
                           onClick={async () => {
@@ -322,8 +429,7 @@ const TasksPage = () => {
                       </li>
                     );
                   })}
-
-                  {deleteTaskError && (
+                  {deleteTaskError && editingTaskId === null && (
                     <p className="px-5 py-3 text-[12.5px] text-[#D98A78]">
                       {deleteTaskError}
                     </p>
@@ -335,12 +441,14 @@ const TasksPage = () => {
         </main>
       </div>
 
+      {/* Add/Edit modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          {/* Background overlay */}
           <button
             type="button"
             aria-label="Close"
-            onClick={() => setModalOpen(false)}
+            onClick={closeModal}
             className="absolute inset-0 bg-black/60"
           />
 
@@ -350,43 +458,21 @@ const TasksPage = () => {
                 className="text-[1.2rem] italic tracking-tight text-[#F3E9DC]"
                 style={{ fontFamily: "'Fraunces', serif" }}
               >
-                Add task
+                {editingTaskId !== null ? "Edit task" : "Add task"}
               </h2>
+
               <button
                 type="button"
-                onClick={() => setModalOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC] cursor-pointer"
+                onClick={closeModal}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC]"
                 aria-label="Close"
               >
                 <CloseIcon className="h-4 w-4" />
               </button>
             </div>
 
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-
-                if (!user) return;
-
-                const success = await createTask({
-                  user_id: String(user.id),
-                  title,
-                  description: description || null,
-                  subject,
-                  priority,
-                  due_date: dueDate || null,
-                });
-                if (success) {
-                  setModalOpen(false);
-                  setTitle("");
-                  setDescription("");
-                  setSubject("");
-                  setPriority("medium");
-                  setDueDate("");
-                }
-              }}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              {/* Title */}
               <div>
                 <label
                   htmlFor="task-title"
@@ -394,15 +480,18 @@ const TasksPage = () => {
                 >
                   Title
                 </label>
+
                 <input
                   id="task-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Task title"
-                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] py-2.5 px-3.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
+                  required
+                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
                 />
               </div>
 
+              {/* Description */}
               <div>
                 <label
                   htmlFor="task-description"
@@ -410,15 +499,17 @@ const TasksPage = () => {
                 >
                   Description
                 </label>
+
                 <input
                   id="task-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Description"
-                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] py-2.5 px-3.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
+                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
                 />
               </div>
 
+              {/* Subject */}
               <div>
                 <label
                   htmlFor="task-subject"
@@ -426,15 +517,17 @@ const TasksPage = () => {
                 >
                   Subject
                 </label>
+
                 <input
                   id="task-subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Subject"
-                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] py-2.5 px-3.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
+                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15"
                 />
               </div>
 
+              {/* Priority */}
               <div>
                 <label
                   htmlFor="task-priority"
@@ -442,13 +535,14 @@ const TasksPage = () => {
                 >
                   Priority
                 </label>
+
                 <select
                   id="task-priority"
                   value={priority}
                   onChange={(e) =>
                     setPriority(e.target.value as "low" | "medium" | "high")
                   }
-                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] py-2.5 px-3 text-[13.5px] text-[#F3E9DC] outline-none focus:border-[#E3A567]/60"
+                  className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3 py-2.5 text-[13.5px] text-[#F3E9DC] outline-none focus:border-[#E3A567]/60"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -456,6 +550,7 @@ const TasksPage = () => {
                 </select>
               </div>
 
+              {/* Due date */}
               <div>
                 <label
                   htmlFor="task-due-date"
@@ -474,17 +569,22 @@ const TasksPage = () => {
                 />
               </div>
 
-              {createTaskError && (
-                <p className="text-[12.5px] text-[#D98A78]">
-                  {createTaskError}
-                </p>
+              {/* Error message */}
+              {currentError && (
+                <p className="text-[12.5px] text-[#D98A78]">{currentError}</p>
               )}
 
+              {/* Submit button */}
               <button
                 type="submit"
-                className="mt-1 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer"
+                disabled={isSubmitting}
+                className="mt-1 cursor-pointer rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Add task
+                {editingTaskId !== null
+                  ? editTaskLoading
+                    ? "Saving..."
+                    : "Save changes"
+                  : "Add task"}
               </button>
             </form>
           </div>

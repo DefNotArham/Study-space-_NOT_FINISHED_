@@ -268,6 +268,9 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       const data = await response.json();
 
+      console.log("Edit task response:", data);
+      console.log("Edit task status:", response.status);
+
       if (!response.ok || !data.success) {
         set({
           editTaskLoading: false,
@@ -278,13 +281,9 @@ const useTaskStore = create<TaskStore>((set) => ({
       }
 
       set((state) => ({
-        Tasks: state.Tasks.map((existingTask) => {
-          if (existingTask.id === data.task.id) {
-            return data.task;
-          }
-
-          return existingTask;
-        }),
+        Tasks: state.Tasks.map((existingTask) =>
+          existingTask.id === data.task.id ? data.task : existingTask,
+        ),
         editTaskLoading: false,
         editTaskError: null,
       }));
