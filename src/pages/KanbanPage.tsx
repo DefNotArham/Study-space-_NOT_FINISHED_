@@ -126,7 +126,7 @@ function TaskCard({
   const priority = PRIORITY_STYLES[task.priority];
 
   return (
-    <div className="group rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)]">
+    <div className="group rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing">
       <div className="mb-3 flex items-center justify-between gap-2">
         <span className="truncate rounded-full border border-[#E3A56755] px-2.5 py-0.5 text-[11.5px] text-[#E3A567]">
           {task.subject}
@@ -181,7 +181,7 @@ function Column({ column }: { column: KanbanColumn }) {
         <button
           type="button"
           aria-label={`Add task to ${column.title}`}
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#E3A567]"
+          className="flex h-7 w-7 items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#E3A567] cursor-pointer"
         >
           <PlusIcon className="h-4 w-4" />
         </button>
@@ -194,7 +194,7 @@ function Column({ column }: { column: KanbanColumn }) {
 
         <button
           type="button"
-          className="mt-auto flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3A2C22] py-2.5 text-[13px] font-medium text-[#6B5D50] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#B8A99A]"
+          className="mt-auto flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3A2C22] py-2.5 text-[13px] font-medium text-[#6B5D50] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#B8A99A] cursor-pointer"
         >
           <PlusIcon className="h-3.5 w-3.5" />
           Add task
