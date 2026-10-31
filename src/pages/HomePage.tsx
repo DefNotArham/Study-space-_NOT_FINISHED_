@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { MenuIcon, CloseIcon, FlameIcon } from "../components/icons/icons";
+import { MenuIcon, CloseIcon } from "../components/icons/icons";
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import { useAuthStore } from "../stores/auth.store";
+import useTaskStore from "../stores/task.store";
 
 import SidebarContents from "../components/auth/SideBarContents";
 
-/* ------------------------------------------------------------------ */
-/*  Page                                                                */
-/* ------------------------------------------------------------------ */
+// ------------------------------------------------------------------
+// Page
+// ------------------------------------------------------------------
 
 export default function HomePage() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function HomePage() {
   const hour = new Date().getHours();
   const timeGreeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
@@ -24,6 +26,31 @@ export default function HomePage() {
   });
 
   const user = useAuthStore((s) => s.user);
+
+  // Task statistics
+  const tasks = useTaskStore((s) => s.Tasks);
+  const fetchTasks = useTaskStore((s) => s.fetchTasks);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  const tasksRemaining = tasks.filter((task) => !task.completed).length;
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const dueTomorrow = tasks.filter((task) => {
+    if (task.completed || !task.due_date) return false;
+
+    const dueDate = new Date(task.due_date);
+
+    return (
+      dueDate.getFullYear() === tomorrow.getFullYear() &&
+      dueDate.getMonth() === tomorrow.getMonth() &&
+      dueDate.getDate() === tomorrow.getDate()
+    );
+  }).length;
 
   return (
     <div
@@ -41,6 +68,7 @@ export default function HomePage() {
         {/* Mobile top bar */}
         <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-3 backdrop-blur-sm md:hidden">
           <Logo />
+
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
@@ -60,6 +88,7 @@ export default function HomePage() {
               onClick={() => setMobileNavOpen(false)}
               className="absolute inset-0 bg-black/60"
             />
+
             <div className="absolute inset-y-0 left-0 w-72 border-r border-[#3A2C22]/70 bg-[#150F0B] px-4 py-6 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
               <div className="mb-2 flex justify-end">
                 <button
@@ -71,14 +100,16 @@ export default function HomePage() {
                   <CloseIcon className="h-4 w-4" />
                 </button>
               </div>
+
               <SidebarContents />
             </div>
           </div>
         )}
 
-        {/* Main content — deliberately minimal for now */}
+        {/* Main content */}
         <main className="flex min-w-0 flex-1 flex-col px-5 pb-12 pt-20 md:ml-64 md:px-10 md:pt-10">
           <div className="mx-auto w-full max-w-5xl">
+            {/* Greeting */}
             <div className="mb-10 animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both]">
               <h1
                 className="text-[1.7rem] italic tracking-tight text-[#F3E9DC]"
@@ -86,23 +117,43 @@ export default function HomePage() {
               >
                 {timeGreeting}, {user?.username}
               </h1>
+
               <p className="mt-1 text-[14px] text-[#8A7B6C]">{today}</p>
             </div>
 
-            <div className="flex min-h-[360px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#3A2C22] bg-[#1D1611]/50 p-10 text-center backdrop-blur-sm">
-              <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#2A1F17] ring-1 ring-[#E3A567]/25 shadow-[0_0_24px_-4px_rgba(227,165,103,0.45)]">
-                <FlameIcon className="h-7 w-7 text-[#E3A567]" />
-              </span>
-              <h2
-                className="text-[1.1rem] italic tracking-tight text-[#F3E9DC]"
-                style={{ fontFamily: "'Fraunces', serif" }}
-              >
-                Your space is ready
-              </h2>
-              <p className="mt-2 max-w-[320px] text-[13.5px] leading-relaxed text-[#8A7B6C]">
-                Subjects, tasks, and progress will live here once they&apos;re
-                built out.
-              </p>
+            {/* Task statistics */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Tasks Remaining */}
+              <div className="rounded-2xl border border-[#3A2C22]/70 bg-[#1D1611]/70 p-6 backdrop-blur-sm transition-colors hover:border-[#E3A567]/30">
+                <p className="text-[13px] text-[#8A7B6C]">Tasks Remaining</p>
+
+                <h2
+                  className="mt-3 text-4xl text-[#F3E9DC]"
+                  style={{ fontFamily: "'Fraunces', serif" }}
+                >
+                  {tasksRemaining}
+                </h2>
+
+                <p className="mt-2 text-[12px] text-[#8A7B6C]">
+                  Tasks left to complete
+                </p>
+              </div>
+
+              {/* Due Tomorrow */}
+              <div className="rounded-2xl border border-[#3A2C22]/70 bg-[#1D1611]/70 p-6 backdrop-blur-sm transition-colors hover:border-[#E3A567]/30">
+                <p className="text-[13px] text-[#8A7B6C]">Due Tomorrow</p>
+
+                <h2
+                  className="mt-3 text-4xl text-[#E3A567]"
+                  style={{ fontFamily: "'Fraunces', serif" }}
+                >
+                  {dueTomorrow}
+                </h2>
+
+                <p className="mt-2 text-[12px] text-[#8A7B6C]">
+                  Incomplete tasks due tomorrow
+                </p>
+              </div>
             </div>
           </div>
         </main>
