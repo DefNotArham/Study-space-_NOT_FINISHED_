@@ -10,6 +10,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 
 import HomePage from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
+import KanbanPage from "./pages/KanbanPage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -78,6 +79,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <TasksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/kanban"
+          element={
+            <ProtectedRoute>
+              <KanbanPage />
             </ProtectedRoute>
           }
         />
