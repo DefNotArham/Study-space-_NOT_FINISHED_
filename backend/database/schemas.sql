@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -28,6 +27,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     description TEXT,
     subject TEXT NOT NULL,
     priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high')),
+    status TEXT NOT NULL DEFAULT 'todo'
+        CHECK (status IN ('todo', 'in_progress', 'completed')),
     completed BOOLEAN DEFAULT FALSE,
     due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
