@@ -13,14 +13,6 @@ export type Task = {
   created_at: string;
 };
 
-export type KanbanColumn = {
-  id: "todo" | "in_progress" | "completed";
-  title: string;
-  accent: string;
-  completed?: boolean;
-  tasks: Task[];
-};
-
 export type CreateTask = {
   user_id: string;
   title: string;

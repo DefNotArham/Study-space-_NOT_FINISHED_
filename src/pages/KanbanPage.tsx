@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useTaskStore from "../stores/task.store";
 import type { Task } from "../types/TaskTypes";
+import type { KanbanColumn, Priority } from "../types/KanbanTypes";
 
 import {
   PlusIcon,
@@ -16,16 +17,6 @@ import SidebarContents from "../components/auth/SideBarContents";
 // ------------------------------------------------------------------
 // Types
 // ------------------------------------------------------------------
-
-type Priority = "low" | "medium" | "high";
-
-type KanbanColumn = {
-  id: "todo" | "in_progress" | "completed";
-  title: string;
-  accent: string;
-  completed?: boolean;
-  tasks: Task[];
-};
 
 // ------------------------------------------------------------------
 // Styles and columns
@@ -198,7 +189,7 @@ const KanbanPage = () => {
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#B8A99A] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC]"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#B8A99A] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#F3E9DC] cursor-pointer"
             aria-label="Open menu"
           >
             <ChecklistIcon className="h-5 w-5" />
@@ -252,7 +243,7 @@ const KanbanPage = () => {
 
               <button
                 type="button"
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer"
               >
                 <PlusIcon className="h-4 w-4" />
                 Add task
