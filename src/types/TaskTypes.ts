@@ -8,8 +8,17 @@ export type Task = {
   subject: string | null;
   completed: boolean;
   priority: "low" | "medium" | "high";
+  status: "todo" | "in_progress" | "completed";
   due_date: string | null;
   created_at: string;
+};
+
+export type KanbanColumn = {
+  id: "todo" | "in_progress" | "completed";
+  title: string;
+  accent: string;
+  completed?: boolean;
+  tasks: Task[];
 };
 
 export type CreateTask = {

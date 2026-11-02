@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useTaskStore from "../stores/task.store";
+import type { Task } from "../types/TaskTypes";
 
 import {
   PlusIcon,
@@ -6,31 +8,28 @@ import {
   ChecklistIcon,
   CheckIcon,
 } from "../components/icons/icons";
+
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
 
-/* ------------------------------------------------------------------ */
-/*  Static placeholder content: visual design only, nothing is wired    */
-/* ------------------------------------------------------------------ */
+// ------------------------------------------------------------------
+// Types
+// ------------------------------------------------------------------
 
 type Priority = "low" | "medium" | "high";
 
-type KanbanTask = {
-  id: string;
-  title: string;
-  subject: string;
-  priority: Priority;
-  due: string;
-};
-
 type KanbanColumn = {
-  id: string;
+  id: "todo" | "in_progress" | "completed";
   title: string;
   accent: string;
   completed?: boolean;
-  tasks: KanbanTask[];
+  tasks: Task[];
 };
+
+// ------------------------------------------------------------------
+// Styles and columns
+// ------------------------------------------------------------------
 
 const PRIORITY_STYLES: Record<Priority, { label: string; color: string }> = {
   high: { label: "High", color: "#C2694A" },
@@ -38,98 +37,40 @@ const PRIORITY_STYLES: Record<Priority, { label: string; color: string }> = {
   low: { label: "Low", color: "#6E8377" },
 };
 
-const COLUMNS: KanbanColumn[] = [
+const getColumns = (tasks: Task[]): KanbanColumn[] => [
   {
     id: "todo",
     title: "To Do",
-    accent: "#7C8FA6",
-    tasks: [
-      {
-        id: "a1",
-        title: "Study for math quiz",
-        subject: "Mathematics",
-        priority: "high",
-        due: "Fri, Oct 31",
-      },
-      {
-        id: "a2",
-        title: "Review SQL joins",
-        subject: "Databases",
-        priority: "medium",
-        due: "Nov 2",
-      },
-      {
-        id: "a3",
-        title: "Finish history notes",
-        subject: "History",
-        priority: "low",
-        due: "Nov 4",
-      },
-    ],
-  },
-  {
-    id: "progress",
-    title: "In Progress",
     accent: "#E3A567",
-    tasks: [
-      {
-        id: "b1",
-        title: "AP Computer Science assignment",
-        subject: "Computer Science",
-        priority: "high",
-        due: "Today",
-      },
-      {
-        id: "b2",
-        title: "Practice JavaScript problems",
-        subject: "Computer Science",
-        priority: "medium",
-        due: "Nov 1",
-      },
-    ],
+    tasks: tasks.filter((task) => task.status === "todo"),
   },
   {
-    id: "done",
+    id: "in_progress",
+    title: "In Progress",
+    accent: "#6E9B9A",
+    tasks: tasks.filter((task) => task.status === "in_progress"),
+  },
+  {
+    id: "completed",
     title: "Completed",
-    accent: "#5B7A5E",
+    accent: "#6E8377",
     completed: true,
-    tasks: [
-      {
-        id: "c1",
-        title: "Read Chapter 4: Cell Biology",
-        subject: "Biology",
-        priority: "medium",
-        due: "Oct 28",
-      },
-      {
-        id: "c2",
-        title: "Organize study desk",
-        subject: "General",
-        priority: "low",
-        due: "Oct 27",
-      },
-    ],
+    tasks: tasks.filter((task) => task.status === "completed"),
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Pieces                                                              */
-/* ------------------------------------------------------------------ */
+// ------------------------------------------------------------------
+// Task Card
+// ------------------------------------------------------------------
 
-function TaskCard({
-  task,
-  completed,
-}: {
-  task: KanbanTask;
-  completed?: boolean;
-}) {
+function TaskCard({ task, completed }: { task: Task; completed?: boolean }) {
   const priority = PRIORITY_STYLES[task.priority];
 
   return (
-    <div className="group rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing">
+    <div className="group cursor-grab rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)] active:cursor-grabbing">
       <div className="mb-3 flex items-center justify-between gap-2">
         <span className="truncate rounded-full border border-[#E3A56755] px-2.5 py-0.5 text-[11.5px] text-[#E3A567]">
-          {task.subject}
+          {task.subject || "No subject"}
         </span>
 
         {completed && (
@@ -155,11 +96,18 @@ function TaskCard({
           />
           {priority.label}
         </span>
-        <span className="text-[12.5px] text-[#8A7B6C]">Due {task.due}</span>
+
+        <span className="text-[12.5px] text-[#8A7B6C]">
+          Due {task.due_date || "No date"}
+        </span>
       </div>
     </div>
   );
 }
+
+// ------------------------------------------------------------------
+// Column
+// ------------------------------------------------------------------
 
 function Column({ column }: { column: KanbanColumn }) {
   return (
@@ -170,9 +118,11 @@ function Column({ column }: { column: KanbanColumn }) {
             className="h-2.5 w-2.5 rounded-full"
             style={{ backgroundColor: column.accent }}
           />
+
           <h2 className="text-[14.5px] font-semibold text-[#F3E9DC]">
             {column.title}
           </h2>
+
           <span className="rounded-full bg-[#2A1F17] px-2 py-0.5 text-[11.5px] font-medium text-[#8A7B6C]">
             {column.tasks.length}
           </span>
@@ -181,20 +131,26 @@ function Column({ column }: { column: KanbanColumn }) {
         <button
           type="button"
           aria-label={`Add task to ${column.title}`}
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#E3A567] cursor-pointer"
+          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#E3A567]"
         >
           <PlusIcon className="h-4 w-4" />
         </button>
       </header>
 
       <div className="flex flex-1 flex-col gap-3">
-        {column.tasks.map((task) => (
-          <TaskCard key={task.id} task={task} completed={column.completed} />
-        ))}
+        {column.tasks.length > 0 ? (
+          column.tasks.map((task) => (
+            <TaskCard key={task.id} task={task} completed={column.completed} />
+          ))
+        ) : (
+          <p className="py-6 text-center text-[12.5px] text-[#6B5D50]">
+            No tasks yet
+          </p>
+        )}
 
         <button
           type="button"
-          className="mt-auto flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3A2C22] py-2.5 text-[13px] font-medium text-[#6B5D50] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#B8A99A] cursor-pointer"
+          className="mt-auto flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3A2C22] py-2.5 text-[13px] font-medium text-[#6B5D50] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#B8A99A]"
         >
           <PlusIcon className="h-3.5 w-3.5" />
           Add task
@@ -204,13 +160,23 @@ function Column({ column }: { column: KanbanColumn }) {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Page                                                                */
-/* ------------------------------------------------------------------ */
+// ------------------------------------------------------------------
+// Page
+// ------------------------------------------------------------------
 
 const KanbanPage = () => {
-  // UI-only state for the mobile menu drawer.
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const Tasks = useTaskStore((state) => state.Tasks);
+  const fetchTasks = useTaskStore((state) => state.fetchTasks);
+  const fetchTasksLoading = useTaskStore((state) => state.fetchTasksLoading);
+  const fetchTasksError = useTaskStore((state) => state.fetchTasksError);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  const columns = getColumns(Tasks);
 
   return (
     <div
@@ -221,13 +187,14 @@ const KanbanPage = () => {
 
       <div className="relative z-10 flex min-h-screen">
         {/* Desktop sidebar */}
-        <aside className="hidden w-64 shrink-0 border-r border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-6 backdrop-blur-sm md:fixed md:inset-y-0 md:flex md:flex-col">
+        <aside className="fixed inset-y-0 hidden w-64 shrink-0 flex-col border-r border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-6 backdrop-blur-sm md:flex">
           <SidebarContents />
         </aside>
 
         {/* Mobile top bar */}
         <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-3 backdrop-blur-sm md:hidden">
           <Logo />
+
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
@@ -247,6 +214,7 @@ const KanbanPage = () => {
               onClick={() => setMobileNavOpen(false)}
               className="absolute inset-0 bg-black/60"
             />
+
             <div className="absolute inset-y-0 left-0 w-72 border-r border-[#3A2C22]/70 bg-[#150F0B] px-4 py-6 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
               <div className="mb-2 flex justify-end">
                 <button
@@ -258,6 +226,7 @@ const KanbanPage = () => {
                   <CloseIcon className="h-4 w-4" />
                 </button>
               </div>
+
               <SidebarContents />
             </div>
           </div>
@@ -267,7 +236,7 @@ const KanbanPage = () => {
         <main className="min-w-0 flex-1 px-5 pb-16 pt-20 md:ml-64 md:px-10 md:pt-10">
           <div className="mx-auto max-w-6xl">
             {/* Header */}
-            <div className="mb-8 flex flex-wrap items-start justify-between gap-4 animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both]">
+            <div className="mb-8 flex animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both] flex-wrap items-start justify-between gap-4">
               <div>
                 <h1
                   className="text-[1.7rem] italic tracking-tight text-[#F3E9DC]"
@@ -275,6 +244,7 @@ const KanbanPage = () => {
                 >
                   Kanban
                 </h1>
+
                 <p className="mt-1 text-[14px] text-[#8A7B6C]">
                   See your study work move from start to finish.
                 </p>
@@ -290,11 +260,21 @@ const KanbanPage = () => {
             </div>
 
             {/* Board */}
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 animate-[ss-fade-up_0.6s_cubic-bezier(0.16,1,0.3,1)_both]">
-              {COLUMNS.map((column) => (
-                <Column key={column.id} column={column} />
-              ))}
-            </div>
+            {fetchTasksLoading ? (
+              <p className="py-10 text-center text-[#8A7B6C]">
+                Loading tasks...
+              </p>
+            ) : fetchTasksError ? (
+              <p className="py-10 text-center text-[#C2694A]">
+                {fetchTasksError}
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-5 animate-[ss-fade-up_0.6s_cubic-bezier(0.16,1,0.3,1)_both] lg:grid-cols-3">
+                {columns.map((column) => (
+                  <Column key={column.id} column={column} />
+                ))}
+              </div>
+            )}
           </div>
         </main>
       </div>
