@@ -166,7 +166,7 @@ def updateTaskCompleted(data, authorization):
         with open("tasks/sql/updateTaskCompleted.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql, (data.completed, data.task_id, user_id))
+        cursor.execute(sql, (data.completed, data.completed, data.task_id, user_id))
 
         row = cursor.fetchone()
 
