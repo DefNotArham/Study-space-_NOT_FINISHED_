@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth.routes import router as authRouter
 from tasks.routes import router as tasksRouter
+from kanban.routes import router as kanbanRouter
 
 from contextlib import asynccontextmanager
 from database.database import initialize_database
@@ -24,3 +25,4 @@ app.add_middleware(
 
 app.include_router(authRouter, prefix="/auth")
 app.include_router(tasksRouter, prefix="/tasks")
+app.include_router(kanbanRouter, prefix="/kanban")
