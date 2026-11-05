@@ -9,3 +9,7 @@ export type KanbanColumn = {
   completed?: boolean;
   tasks: Task[];
 };
+
+export type KanbanStore = {
+  updateStatus: () => Promise<boolean>;
+};
