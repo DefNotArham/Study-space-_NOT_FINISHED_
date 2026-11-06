@@ -4,12 +4,12 @@ from auth.jwt import verify_token
 def updateStatus(data, authorization):
     if not authorization or not authorization.startswith("Bearer "):
         return {
-            "message": "Missing or invalid authorization header", 
+            "message": "Missing or invalid authorization header",
             "success": False
         }
 
     token = authorization.removeprefix("Bearer ").strip()
-    payload = authorization(token)
+    payload = verify_token(token)
 
     if not payload:
         return {
@@ -24,7 +24,7 @@ def updateStatus(data, authorization):
             "message": "Invalid token payload",
             "success": False
         }
-    
+
     connection = None
     cursor = None
 
@@ -32,20 +32,41 @@ def updateStatus(data, authorization):
         connection = get_connection()
         cursor = connection.cursor()
 
-        with open ("kanban/sql/updateStatus.sql", "r") as file:
+        with open("kanban/sql/updateStatus.sql", "r") as file:
             sql = file.read()
 
-        cursor.execute(sql, (data.status, data.taskId))
+        cursor.execute(
+            sql,
+            (data.status, data.status, data.task_id, user_id)
+        )
 
-    except Exception as error: 
+        updated_task = cursor.fetchone()
+        connection.commit()
+
+        if not updated_task:
+            return {
+                "message": "Task not found",
+                "success": False
+            }
+
+        return {
+            "message": "Task status updated",
+            "success": True
+        }
+
+    except Exception as error:
         print(str(error))
-        if connection: 
+
+        if connection:
             connection.rollback()
 
-        return {"message": str(error), "success": False}
+        return {
+            "message": str(error),
+            "success": False
+        }
 
     finally:
-        if cursor: 
+        if cursor:
             cursor.close()
 
         if connection:

@@ -2,7 +2,5 @@ from pydantic import BaseModel
 from typing import Literal
 
 class UpdateStatusRequest(BaseModel):
-    taskId: int
+    task_id: int
     status: Literal["todo", "in_progress", "completed"]
-
-    
