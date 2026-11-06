@@ -125,14 +125,17 @@ const useTaskStore = create<TaskStore>((set) => ({
       return false;
     }
 
-    set({ deleteTaskLoading: true, deleteTaskError: null });
+    const previousTask = useTaskStore
+      .getState()
+      .Tasks.find((task) => task.id === Number(taskId));
 
-    const previousTasks = useTaskStore.getState().Tasks;
+    if (!previousTask) return false;
 
+    // Update frontend immediately
     set((state) => ({
-      Tasks: state.Tasks.filter((task) => {
-        return task.id !== taskId;
-      }),
+      Tasks: state.Tasks.filter((task) => task.id !== Number(taskId)),
+      deleteTaskLoading: true,
+      deleteTaskError: null,
     }));
 
     try {
@@ -150,13 +153,7 @@ const useTaskStore = create<TaskStore>((set) => ({
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        set({
-          Tasks: previousTasks,
-          deleteTaskLoading: false,
-          deleteTaskError: data.message || "Failed to delete task",
-        });
-
-        return false;
+        throw new Error(data.message || "Failed to delete task");
       }
 
       set({
@@ -165,13 +162,17 @@ const useTaskStore = create<TaskStore>((set) => ({
 
       return true;
     } catch (error) {
-      console.log(error);
+      console.error("Delete task error:", error);
 
-      set({
-        Tasks: previousTasks,
+      // Restore the deleted task
+      set((state) => ({
+        Tasks: [previousTask, ...state.Tasks],
         deleteTaskLoading: false,
-        deleteTaskError: "Something went wrong while deleting the task",
-      });
+        deleteTaskError:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while deleting the task",
+      }));
 
       return false;
     }
