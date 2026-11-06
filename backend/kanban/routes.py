@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from request_schemas import UpdateStatusRequest
-from controllers import updateStatus
+from .request_schemas import UpdateStatusRequest
+from .controllers import updateStatus
 
 router = APIRouter()
 

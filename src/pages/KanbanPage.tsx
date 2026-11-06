@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import useTaskStore from "../stores/task.store";
 import type { Task } from "../types/TaskTypes";
-import type { KanbanColumn, Priority } from "../types/KanbanTypes";
+import type { KanbanColumn, Priority, TaskStatus } from "../types/KanbanTypes";
+import useKanbanStore from "../stores/kanban.store";
 
 import {
   PlusIcon,
@@ -58,7 +59,14 @@ function TaskCard({ task, completed }: { task: Task; completed?: boolean }) {
   const priority = PRIORITY_STYLES[task.priority];
 
   return (
-    <div className="group cursor-grab rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)] active:cursor-grabbing">
+    <div
+      draggable
+      onDragStart={(event) => {
+        event.dataTransfer.setData("text/plain", String(task.id));
+        event.dataTransfer.effectAllowed = "move";
+      }}
+      className="group cursor-grab rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-4 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#4A392C] hover:shadow-[0_16px_34px_-16px_rgba(0,0,0,0.8)] active:cursor-grabbing"
+    >
       <div className="mb-3 flex items-center justify-between gap-2">
         <span className="truncate rounded-full border border-[#E3A56755] px-2.5 py-0.5 text-[11.5px] text-[#E3A567]">
           {task.subject || "No subject"}
@@ -100,9 +108,30 @@ function TaskCard({ task, completed }: { task: Task; completed?: boolean }) {
 // Column
 // ------------------------------------------------------------------
 
-function Column({ column }: { column: KanbanColumn }) {
+function Column({
+  column,
+  onMove,
+}: {
+  column: KanbanColumn;
+  onMove: (taskId: number, status: TaskStatus) => void;
+}) {
   return (
-    <section className="flex min-h-[320px] flex-col rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 p-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+    <section
+      onDragOver={(event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+
+        const taskId = Number(event.dataTransfer.getData("text/plain"));
+
+        if (!Number.isNaN(taskId)) {
+          onMove(taskId, column.id);
+        }
+      }}
+      className="flex min-h-[320px] flex-col rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 p-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm"
+    >
       <header className="mb-4 flex items-center justify-between px-1">
         <div className="flex items-center gap-2.5">
           <span
@@ -168,6 +197,14 @@ const KanbanPage = () => {
   }, [fetchTasks]);
 
   const columns = getColumns(Tasks);
+
+  const updateStatus = useKanbanStore((state) => state.updateStatus);
+
+  const handleMoveTask = (taskId: number, newStatus: TaskStatus) => {
+    const task = Tasks.find((task) => task.id === taskId);
+    if (!task || task.status === newStatus) return;
+    updateStatus(taskId, newStatus);
+  };
 
   return (
     <div
@@ -262,7 +299,11 @@ const KanbanPage = () => {
             ) : (
               <div className="grid grid-cols-1 gap-5 animate-[ss-fade-up_0.6s_cubic-bezier(0.16,1,0.3,1)_both] lg:grid-cols-3">
                 {columns.map((column) => (
-                  <Column key={column.id} column={column} />
+                  <Column
+                    key={column.id}
+                    column={column}
+                    onMove={handleMoveTask}
+                  />
                 ))}
               </div>
             )}
