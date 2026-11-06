@@ -1,6 +1,6 @@
 import type { Task } from "./TaskTypes";
 
-export type Priority = "low" | "medium" | "high";
+export type TaskStatus = "todo" | "in_progress" | "completed";
 
 export type KanbanColumn = {
   id: "todo" | "in_progress" | "completed";
@@ -11,5 +11,5 @@ export type KanbanColumn = {
 };
 
 export type KanbanStore = {
-  updateStatus: () => Promise<boolean>;
+  updateStatus: (taskId: number, status: TaskStatus) => void;
 };
