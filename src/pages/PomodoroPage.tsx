@@ -264,13 +264,8 @@ const PomodoroPage = () => {
       <style>{`
       html,
       body {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-
-      html::-webkit-scrollbar,
-      body::-webkit-scrollbar {
-        display: none;
+        background: #120C09;
+        overscroll-behavior-y: none;
       }
     `}</style>
 
@@ -456,9 +451,17 @@ const PomodoroPage = () => {
                         aria-pressed={selected}
                         className="min-w-0 flex-1 cursor-pointer p-4 text-left"
                       >
-                        <p className="truncate text-[14.5px] font-semibold text-[#F3E9DC]">
-                          {s.name}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="truncate text-[14.5px] font-semibold text-[#F3E9DC]">
+                            {s.name}
+                          </p>
+
+                          {!isCustom && (
+                            <span className="shrink-0 rounded-md border border-[#3A2C22] bg-[#2E2117] px-2 py-0.5 text-[10px] font-medium text-[#E3A567]">
+                              Default
+                            </span>
+                          )}
+                        </div>
                         <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#8A7B6C]">
                           {s.focus} min focus · {s.shortBreak} min short ·{" "}
                           {s.longBreak} min long · {s.rounds} sessions

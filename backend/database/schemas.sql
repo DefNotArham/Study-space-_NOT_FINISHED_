@@ -33,3 +33,14 @@ CREATE TABLE IF NOT EXISTS tasks (
     due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS pomodoro_sessions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    focus INTEGER NOT NULL CHECK (focus > 0),
+    short_break INTEGER NOT NULL CHECK (short_break > 0),
+    long_break INTEGER NOT NULL CHECK (long_break > 0),
+    rounds INTEGER NOT NULL CHECK (rounds > 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
