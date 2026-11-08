@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import useTaskStore from "../stores/task.store";
 import type { Task } from "../types/TaskTypes";
 import type { KanbanColumn, Priority, TaskStatus } from "../types/KanbanTypes";
 import useKanbanStore from "../stores/kanban.store";
+import { useAuthStore } from "../stores/auth.store";
 
 import {
   PlusIcon,
@@ -14,10 +16,6 @@ import {
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
-
-// ------------------------------------------------------------------
-// Types
-// ------------------------------------------------------------------
 
 // ------------------------------------------------------------------
 // Styles and columns
@@ -147,14 +145,6 @@ function Column({
             {column.tasks.length}
           </span>
         </div>
-
-        <button
-          type="button"
-          aria-label={`Add task to ${column.title}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] transition-colors duration-200 hover:bg-[#1B140F] hover:text-[#E3A567]"
-        >
-          <PlusIcon className="h-4 w-4" />
-        </button>
       </header>
 
       <div className="flex flex-1 flex-col gap-3">
@@ -167,14 +157,6 @@ function Column({
             No tasks yet
           </p>
         )}
-
-        <button
-          type="button"
-          className="mt-auto flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3A2C22] py-2.5 text-[13px] font-medium text-[#6B5D50] transition-colors duration-200 hover:border-[#4A392C] hover:text-[#B8A99A]"
-        >
-          <PlusIcon className="h-3.5 w-3.5" />
-          Add task
-        </button>
       </div>
     </section>
   );
@@ -186,7 +168,6 @@ function Column({
 
 const KanbanPage = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
   const Tasks = useTaskStore((state) => state.Tasks);
   const fetchTasks = useTaskStore((state) => state.fetchTasks);
   const fetchTasksLoading = useTaskStore((state) => state.fetchTasksLoading);
@@ -202,8 +183,67 @@ const KanbanPage = () => {
 
   const handleMoveTask = (taskId: number, newStatus: TaskStatus) => {
     const task = Tasks.find((task) => task.id === taskId);
+
     if (!task || task.status === newStatus) return;
+
     updateStatus(taskId, newStatus);
+  };
+
+  const user = useAuthStore((state) => state.user);
+
+  const createTask = useTaskStore((state) => state.createTask);
+  const createTaskError = useTaskStore((state) => state.createTaskError);
+
+  //  Add task form
+  const [modalOpen, setModalOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [subject, setSubject] = useState("");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [dueDate, setDueDate] = useState("");
+  const [createTaskLoading, setCreateTaskLoading] = useState(false);
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setSubject("");
+    setPriority("medium");
+    setDueDate("");
+  };
+
+  const openAddModal = () => {
+    resetForm();
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    resetForm();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+
+    if (!user || !title.trim()) return;
+
+    setCreateTaskLoading(false);
+
+    try {
+      const success = await createTask({
+        user_id: String(user.id),
+        title: title.trim(),
+        description: description || null,
+        subject,
+        priority,
+        due_date: dueDate || null,
+      });
+
+      if (success) {
+        closeModal();
+      }
+    } finally {
+      setCreateTaskLoading(false);
+    }
   };
 
   return (
@@ -279,6 +319,9 @@ const KanbanPage = () => {
               </div>
 
               <button
+                onClick={() => {
+                  openAddModal();
+                }}
                 type="button"
                 className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)] active:translate-y-0 cursor-pointer"
               >
@@ -308,6 +351,128 @@ const KanbanPage = () => {
               </div>
             )}
           </div>
+
+          {/* Add Task Modal */}
+          {modalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={closeModal}
+                className="absolute inset-0 cursor-pointer bg-black/60"
+              />
+
+              <div className="relative w-full max-w-md rounded-2xl border border-[#3A2C22]/70 bg-[#1D1611] p-6 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65)]">
+                <div className="mb-5 flex items-center justify-between">
+                  <h2
+                    className="text-[1.2rem] italic tracking-tight text-[#F3E9DC]"
+                    style={{ fontFamily: "'Fraunces', serif" }}
+                  >
+                    Add task
+                  </h2>
+
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[#8A7B6C] hover:bg-[#1B140F] hover:text-[#F3E9DC]"
+                    aria-label="Close"
+                  >
+                    <CloseIcon className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Title */}
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]">
+                      Title
+                    </label>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Task title"
+                      required
+                      className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none focus:border-[#E3A567]/60"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]">
+                      Description
+                    </label>
+                    <input
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Description"
+                      className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none focus:border-[#E3A567]/60"
+                    />
+                  </div>
+
+                  {/* Subject */}
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]">
+                      Subject
+                    </label>
+                    <input
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      placeholder="Subject"
+                      className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none focus:border-[#E3A567]/60"
+                    />
+                  </div>
+
+                  {/* Priority */}
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]">
+                      Priority
+                    </label>
+                    <select
+                      value={priority}
+                      onChange={(e) =>
+                        setPriority(e.target.value as "low" | "medium" | "high")
+                      }
+                      className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3 py-2.5 text-[13.5px] text-[#F3E9DC] outline-none focus:border-[#E3A567]/60"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+
+                  {/* Due date */}
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-medium text-[#B8A99A]">
+                      Due date
+                    </label>
+                    <input
+                      type="date"
+                      value={dueDate}
+                      onChange={(e) => setDueDate(e.target.value)}
+                      min={new Date().toLocaleDateString("en-CA")}
+                      className="w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] outline-none focus:border-[#E3A567]/60"
+                    />
+                  </div>
+
+                  {/* Error */}
+                  {createTaskError && (
+                    <p className="text-[12.5px] text-[#D98A78]">
+                      {createTaskError}
+                    </p>
+                  )}
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={createTaskLoading}
+                    className="mt-1 cursor-pointer rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {createTaskLoading ? "Adding..." : "Add task"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
