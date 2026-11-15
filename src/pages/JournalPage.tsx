@@ -56,7 +56,7 @@ const JournalPage = () => {
                 <button
                   type="button"
                   onClick={() => setMobileNavOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#B8A99A] hover:bg-[#1B140F] hover:text-[#F3E9DC]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#B8A99A] transition-colors hover:bg-[#1B140F] hover:text-[#F3E9DC]"
                   aria-label="Close menu"
                 >
                   <CloseIcon className="h-4 w-4" />
@@ -69,10 +69,10 @@ const JournalPage = () => {
         )}
 
         {/* Main content */}
-        <main className="min-w-0 flex-1 overflow-y-auto px-5 pb-6 pt-20 md:ml-64 md:px-10 md:pt-10">
-          <div className="mx-auto max-w-6xl">
-            {/* Header */}
-            <div className="mb-10 flex animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both] flex-wrap items-end justify-between gap-5">
+        <main className="h-screen min-w-0 flex-1 overflow-y-auto px-5 pb-6 pt-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:ml-64 md:px-10 md:pt-10">
+          <div className="mx-auto flex min-h-full max-w-6xl flex-col">
+            {/* Page header */}
+            <div className="mb-9 flex animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both] flex-wrap items-end justify-between gap-5">
               <div>
                 <h1
                   className="text-3xl italic tracking-tight text-[#F3E9DC]"
@@ -96,7 +96,7 @@ const JournalPage = () => {
             </div>
 
             {/* Recent entries */}
-            <section>
+            <section className="flex flex-1 flex-col">
               <div className="mb-5 flex items-center justify-between border-b border-[#3A2C22]/70 pb-4">
                 <div>
                   <h2
@@ -117,7 +117,7 @@ const JournalPage = () => {
               </div>
 
               {/* Empty state */}
-              <div className="flex min-h-[380px] flex-col items-center justify-center rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 px-6 py-12 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+              <div className="flex min-h-[350px] flex-1 flex-col items-center justify-center rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 px-6 py-12 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
                 <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3A2C22] bg-[#1D1611]">
                   <BookIcon className="h-7 w-7 text-[#E3A567]" />
                 </div>
@@ -130,17 +130,10 @@ const JournalPage = () => {
                 </h3>
 
                 <p className="mt-3 max-w-sm text-[13px] leading-6 text-[#8A7B6C]">
-                  You haven't written any entries yet. Create your first one and
-                  start keeping track of your thoughts, ideas, and memories.
+                  You haven't written any entries yet. Start your first journal
+                  entry and keep your thoughts, ideas, and memories in one
+                  place.
                 </p>
-
-                <button
-                  type="button"
-                  className="mt-7 flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-5 py-2.5 text-[13px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.4)] transition-all hover:-translate-y-0.5"
-                >
-                  <PlusIcon className="h-4 w-4" />
-                  Write your first entry
-                </button>
               </div>
             </section>
           </div>
