@@ -12,6 +12,7 @@ import HomePage from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
 import KanbanPage from "./pages/KanbanPage";
 import PomodoroPage from "./pages/PomodoroPage";
+import JournalPage from "./pages/JournalPage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -30,7 +31,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        // Auth pages
         <Route
           path="/login"
           element={
@@ -66,7 +66,6 @@ export default function App() {
         />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/email-confirmed" element={<EmailConfirmed />} />
-        //
         <Route
           path="/"
           element={
@@ -96,6 +95,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <PomodoroPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/journal"
+          element={
+            <ProtectedRoute>
+              <JournalPage />
             </ProtectedRoute>
           }
         />
