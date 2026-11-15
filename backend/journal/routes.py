@@ -1,9 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 from .controllers import createJournal
 from .request_schemas import CreateJournalRequest
 
 router = APIRouter()
 
 @router.post("/create-journal")
-def ceateJournal_route(data: CreateJournalRequest):
-    return createJournal(data)
+def createJournal_route(data: CreateJournalRequest, authorization: str | None = Header(default=None)):
+    return createJournal(data, authorization)
