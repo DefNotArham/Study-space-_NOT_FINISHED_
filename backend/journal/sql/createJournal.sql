@@ -3,7 +3,7 @@ INSERT INTO journals (
     title,
     content
 )
-VALUES ($1, $2, $3)
+VALUES (%s, %s, %s)
 RETURNING
     id AS journal_id,
     user_id,
