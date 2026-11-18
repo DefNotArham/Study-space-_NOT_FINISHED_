@@ -10,9 +10,43 @@ import {
 import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
+import { useJournalStore } from "../stores/journal.store";
 
 const JournalPage = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const journals = useJournalStore((state) => state.journals);
+  const createJournal = useJournalStore((state) => state.createJournal);
+  const createJournalError = useJournalStore(
+    (state) => state.createJournalError,
+  );
+  const createJournalLoading = useJournalStore(
+    (state) => state.createJournalLoading,
+  );
+
+  const [newEntryOpen, setNewEntryOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  const openNewEntry = () => {
+    setNewEntryOpen(true);
+  };
+
+  const closeNewEntry = () => {
+    if (createJournalLoading) return;
+
+    setNewEntryOpen(false);
+  };
+
+  const handleCreateJournal = async () => {
+    const success = await createJournal(title.trim(), content.trim());
+
+    if (success) {
+      setTitle("");
+      setContent("");
+      setNewEntryOpen(false);
+    }
+  };
 
   return (
     <div
@@ -87,6 +121,7 @@ const JournalPage = () => {
               </div>
 
               <button
+                onClick={openNewEntry}
                 type="button"
                 className="flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_-6px_rgba(201,125,74,0.7)]"
               >
@@ -94,6 +129,90 @@ const JournalPage = () => {
                 New entry
               </button>
             </div>
+
+            {/* New journal entry modal */}
+            {newEntryOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+                <div className="w-full max-w-lg rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B] p-6 shadow-2xl">
+                  <div className="mb-6 flex items-center justify-between">
+                    <h2
+                      className="text-2xl italic text-[#F3E9DC]"
+                      style={{ fontFamily: "'Fraunces', serif" }}
+                    >
+                      New journal entry
+                    </h2>
+
+                    <button
+                      type="button"
+                      onClick={closeNewEntry}
+                      disabled={createJournalLoading}
+                      className="text-[#8A7B6C] transition-colors hover:text-[#F3E9DC] disabled:opacity-50"
+                      aria-label="Close modal"
+                    >
+                      <CloseIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="mb-2 block text-sm text-[#B8A99A]">
+                        Title
+                      </label>
+
+                      <input
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Give your entry a title..."
+                        className="w-full rounded-xl border border-[#3A2C22] bg-[#1D1611] px-4 py-3 text-sm text-[#F3E9DC] outline-none placeholder:text-[#6F6256] focus:border-[#C97D4A]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm text-[#B8A99A]">
+                        Your thoughts
+                      </label>
+
+                      <textarea
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="Start writing..."
+                        rows={7}
+                        className="w-full resize-none rounded-xl border border-[#3A2C22] bg-[#1D1611] px-4 py-3 text-sm leading-6 text-[#F3E9DC] outline-none placeholder:text-[#6F6256] focus:border-[#C97D4A]"
+                      />
+                    </div>
+                  </div>
+
+                  {createJournalError && (
+                    <p className="mt-3 text-sm text-red-400">
+                      {createJournalError}
+                    </p>
+                  )}
+
+                  <div className="mt-6 flex justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={closeNewEntry}
+                      disabled={createJournalLoading}
+                      className="rounded-xl border border-[#3A2C22] px-4 py-2.5 text-sm text-[#B8A99A] hover:bg-[#1D1611] disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={
+                        createJournalLoading || !title.trim() || !content.trim()
+                      }
+                      onClick={handleCreateJournal}
+                      className="rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-sm font-semibold text-[#221407] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {createJournalLoading ? "Saving..." : "Create entry"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Recent entries */}
             <section className="flex flex-1 flex-col">
@@ -112,29 +231,53 @@ const JournalPage = () => {
                 </div>
 
                 <span className="rounded-lg border border-[#3A2C22] bg-[#1D1611] px-3 py-1.5 text-[11px] text-[#9C8D7E]">
-                  0 entries
+                  {journals.length}{" "}
+                  {journals.length === 1 ? "entry" : "entries"}
                 </span>
               </div>
 
-              {/* Empty state */}
-              <div className="flex min-h-[350px] flex-1 flex-col items-center justify-center rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 px-6 py-12 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
-                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3A2C22] bg-[#1D1611]">
-                  <BookIcon className="h-7 w-7 text-[#E3A567]" />
+              {/* Empty state or journal entries */}
+              {journals.length === 0 ? (
+                <div className="flex min-h-[350px] flex-1 flex-col items-center justify-center rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 px-6 py-12 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3A2C22] bg-[#1D1611]">
+                    <BookIcon className="h-7 w-7 text-[#E3A567]" />
+                  </div>
+
+                  <h3
+                    className="text-2xl italic text-[#F3E9DC]"
+                    style={{ fontFamily: "'Fraunces', serif" }}
+                  >
+                    Your story starts here.
+                  </h3>
+
+                  <p className="mt-3 max-w-sm text-[13px] leading-6 text-[#8A7B6C]">
+                    You haven't written any entries yet. Start your first
+                    journal entry and keep your thoughts, ideas, and memories in
+                    one place.
+                  </p>
                 </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {journals.map((journal) => (
+                    <div
+                      key={journal.journal_id}
+                      className="rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-5 transition-colors hover:border-[#4A392C]"
+                    >
+                      <h3 className="text-lg text-[#F3E9DC]">
+                        {journal.title}
+                      </h3>
 
-                <h3
-                  className="text-2xl italic text-[#F3E9DC]"
-                  style={{ fontFamily: "'Fraunces', serif" }}
-                >
-                  Your story starts here.
-                </h3>
+                      <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#9C8D7E]">
+                        {journal.content}
+                      </p>
 
-                <p className="mt-3 max-w-sm text-[13px] leading-6 text-[#8A7B6C]">
-                  You haven't written any entries yet. Start your first journal
-                  entry and keep your thoughts, ideas, and memories in one
-                  place.
-                </p>
-              </div>
+                      <p className="mt-4 text-xs text-[#6F6256]">
+                        {new Date(journal.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           </div>
         </main>
