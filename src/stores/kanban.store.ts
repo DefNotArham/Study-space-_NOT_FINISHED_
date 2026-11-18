@@ -28,6 +28,8 @@ const useKanbanStore = create<KanbanStore>((set, get) => ({
       try {
         const token = localStorage.getItem("token");
 
+        if (!token) return;
+
         const response = await fetch(
           "http://127.0.0.1:8000/kanban/update-status",
           {
