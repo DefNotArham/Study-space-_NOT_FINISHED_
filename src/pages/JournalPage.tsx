@@ -146,7 +146,7 @@ const JournalPage = () => {
                       type="button"
                       onClick={closeNewEntry}
                       disabled={createJournalLoading}
-                      className="text-[#8A7B6C] transition-colors hover:text-[#F3E9DC] disabled:opacity-50"
+                      className="text-[#8A7B6C] transition-colors hover:text-[#F3E9DC] disabled:opacity-50 cursor-pointer"
                       aria-label="Close modal"
                     >
                       <CloseIcon className="h-5 w-5" />
@@ -194,7 +194,7 @@ const JournalPage = () => {
                       type="button"
                       onClick={closeNewEntry}
                       disabled={createJournalLoading}
-                      className="rounded-xl border border-[#3A2C22] px-4 py-2.5 text-sm text-[#B8A99A] hover:bg-[#1D1611] disabled:opacity-50"
+                      className="rounded-xl border border-[#3A2C22] px-4 py-2.5 text-sm text-[#B8A99A] hover:bg-[#1D1611] disabled:opacity-50 cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -205,7 +205,7 @@ const JournalPage = () => {
                         createJournalLoading || !title.trim() || !content.trim()
                       }
                       onClick={handleCreateJournal}
-                      className="rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-sm font-semibold text-[#221407] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-sm font-semibold text-[#221407] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                     >
                       {createJournalLoading ? "Saving..." : "Create entry"}
                     </button>
