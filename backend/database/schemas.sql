@@ -61,3 +61,11 @@ CREATE TABLE IF NOT EXISTS study_rooms (
     invite_code VARCHAR(12) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS study_room_members (
+    id SERIAL PRIMARY KEY,
+    room_id INTEGER NOT NULL REFERENCES study_rooms(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (room_id, user_id)
+);
