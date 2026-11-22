@@ -11,5 +11,9 @@ export type JournalStore = {
   createJournalLoading: boolean;
   createJournalError: string | null;
 
+  loadJournalsLoading: boolean;
+  loadJournalsError: string | null;
+
   createJournal: (title: string, content: string) => Promise<boolean>;
+  loadJournals: () => Promise<boolean>;
 };
