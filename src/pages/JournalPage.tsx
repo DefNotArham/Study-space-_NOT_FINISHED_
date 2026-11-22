@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   BookIcon,
@@ -47,6 +47,12 @@ const JournalPage = () => {
       setNewEntryOpen(false);
     }
   };
+
+  const loadJournals = useJournalStore((state) => state.loadJournals);
+
+  useEffect(() => {
+    loadJournals();
+  }, [loadJournals]);
 
   return (
     <div
