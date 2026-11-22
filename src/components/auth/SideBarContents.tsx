@@ -35,8 +35,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Kanban", path: "/kanban", icon: KanbanIcon },
   { label: "Pomodoro", path: "/pomodoro", icon: PomodoroIcon },
   { label: "Journal", path: "/journal", icon: NotebookIcon },
-  { label: "Analytics", path: "/analytics", icon: AnalyticsIcon },
-  { label: "Study Streak", path: "/streak", icon: FlameIcon },
   { label: "Study Rooms", path: "/rooms", icon: StudyRoomsIcon },
 ];
 
