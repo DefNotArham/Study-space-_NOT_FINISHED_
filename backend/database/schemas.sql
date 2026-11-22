@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS study_rooms (
     host_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    invite_code VARCHAR(12) UNIQUE,
-    is_private BOOLEAN DEFAULT TRUE,
+    invite_code VARCHAR(12) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
