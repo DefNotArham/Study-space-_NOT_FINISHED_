@@ -67,4 +67,69 @@ def createJournal(data, authorization):
             cursor.close()
         if connection:
             connection.close()
-        
+
+def loadJournals(authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "success": False,
+            "message": "Missing or invalid authorization header"
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "success": False,
+            "message": "Invalid or expired token"
+        }
+
+    user_id = payload.get("user_id")
+
+    if user_id is None:
+        return {
+            "success": False,
+            "message": "Invalid token payload"
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("journal/sql/loadJournals.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql, (user_id,))
+
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]
+
+        journals = []
+
+        for row in rows:
+            journal = dict(zip(columns, row))
+            journal["created_at"] = journal["created_at"].isoformat()
+            journals.append(journal)
+
+        return {
+            "message": "Journals loaded successfully",
+            "success": True,
+            "journals": journals
+        }
+
+    except Exception as error:
+        print(error)
+
+        return {
+            "message": "Failed to load journals",
+            "success": False
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
