@@ -23,10 +23,19 @@ const JournalPage = () => {
   const createJournalLoading = useJournalStore(
     (state) => state.createJournalLoading,
   );
+  const loadJournalsLoading = useJournalStore(
+    (state) => state.loadJournalsLoading,
+  );
 
   const [newEntryOpen, setNewEntryOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const loadJournals = useJournalStore((state) => state.loadJournals);
+
+  useEffect(() => {
+    loadJournals();
+  }, [loadJournals]);
 
   const openNewEntry = () => {
     setNewEntryOpen(true);
@@ -47,12 +56,6 @@ const JournalPage = () => {
       setNewEntryOpen(false);
     }
   };
-
-  const loadJournals = useJournalStore((state) => state.loadJournals);
-
-  useEffect(() => {
-    loadJournals();
-  }, [loadJournals]);
 
   return (
     <div
@@ -152,7 +155,7 @@ const JournalPage = () => {
                       type="button"
                       onClick={closeNewEntry}
                       disabled={createJournalLoading}
-                      className="text-[#8A7B6C] transition-colors hover:text-[#F3E9DC] disabled:opacity-50 cursor-pointer"
+                      className="cursor-pointer text-[#8A7B6C] transition-colors hover:text-[#F3E9DC] disabled:opacity-50"
                       aria-label="Close modal"
                     >
                       <CloseIcon className="h-5 w-5" />
@@ -200,7 +203,7 @@ const JournalPage = () => {
                       type="button"
                       onClick={closeNewEntry}
                       disabled={createJournalLoading}
-                      className="rounded-xl border border-[#3A2C22] px-4 py-2.5 text-sm text-[#B8A99A] hover:bg-[#1D1611] disabled:opacity-50 cursor-pointer"
+                      className="cursor-pointer rounded-xl border border-[#3A2C22] px-4 py-2.5 text-sm text-[#B8A99A] hover:bg-[#1D1611] disabled:opacity-50"
                     >
                       Cancel
                     </button>
@@ -211,7 +214,7 @@ const JournalPage = () => {
                         createJournalLoading || !title.trim() || !content.trim()
                       }
                       onClick={handleCreateJournal}
-                      className="rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-sm font-semibold text-[#221407] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                      className="cursor-pointer rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] px-4 py-2.5 text-sm font-semibold text-[#221407] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {createJournalLoading ? "Saving..." : "Create entry"}
                     </button>
@@ -242,8 +245,27 @@ const JournalPage = () => {
                 </span>
               </div>
 
-              {/* Empty state or journal entries */}
-              {journals.length === 0 ? (
+              {/* Loading animation, empty state, or journal entries */}
+              {loadJournalsLoading ? (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      key={item}
+                      className="animate-pulse rounded-xl border border-[#3A2C22]/70 bg-[#1D1611] p-5"
+                    >
+                      <div className="h-5 w-2/3 rounded-md bg-[#3A2C22]" />
+
+                      <div className="mt-5 space-y-3">
+                        <div className="h-3 w-full rounded bg-[#3A2C22]/80" />
+                        <div className="h-3 w-full rounded bg-[#3A2C22]/80" />
+                        <div className="h-3 w-4/5 rounded bg-[#3A2C22]/80" />
+                      </div>
+
+                      <div className="mt-6 h-3 w-1/4 rounded bg-[#3A2C22]/70" />
+                    </div>
+                  ))}
+                </div>
+              ) : journals.length === 0 ? (
                 <div className="flex min-h-[350px] flex-1 flex-col items-center justify-center rounded-2xl border border-[#3A2C22]/70 bg-[#150F0B]/80 px-6 py-12 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
                   <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3A2C22] bg-[#1D1611]">
                     <BookIcon className="h-7 w-7 text-[#E3A567]" />
