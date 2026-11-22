@@ -13,6 +13,7 @@ import TasksPage from "./pages/TasksPage";
 import KanbanPage from "./pages/KanbanPage";
 import PomodoroPage from "./pages/PomodoroPage";
 import JournalPage from "./pages/JournalPage";
+import StudyRoomsPage from "./pages/StudyRoomPage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -103,6 +104,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <JournalPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rooms"
+          element={
+            <ProtectedRoute>
+              <StudyRoomsPage />
             </ProtectedRoute>
           }
         />
