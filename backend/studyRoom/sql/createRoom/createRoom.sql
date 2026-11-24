@@ -5,4 +5,4 @@ INSERT INTO study_rooms (
     invite_code
 )
 VALUES (%s, %s, %s, %s)
-RETURNING id, name, description, invite_code, created_at;
+RETURNING id, host_id, name, description, invite_code, created_at;

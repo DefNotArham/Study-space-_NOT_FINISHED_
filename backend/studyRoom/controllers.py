@@ -57,15 +57,17 @@ def createRoom(data, authorization):
 
         connection.commit()
 
+
         return {
             "message": "Room created successfully",
             "success": True,
             "room": {
                 "id": room[0],
-                "name": room[1],
-                "description": room[2],
-                "invite_code": room[3],
-                "created_at": str(room[4])
+                "host_id": room[1],
+                "name": room[2],
+                "description": room[3],
+                "invite_code": room[4],
+                "created_at": room[5].isoformat() if room[5] else None
             }
         }
 
