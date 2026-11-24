@@ -88,3 +88,74 @@ def createRoom(data, authorization):
         if connection:
             connection.close()
 
+
+def loadRooms(authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload.get("user_id")
+
+    if not user_id:
+        return {
+            "message": "Invalid payload token",
+            "success": False
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("studyRoom/sql/loadRooms.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql, (user_id,) )
+
+        rooms = cursor.fetchall()
+
+        rooms_list = []
+
+        for room in rooms:
+            rooms_list.append({
+                "id": room[0],
+                "host_id": room[1],
+                "name": room[2],
+                "description": room[3],
+                "invite_code": room[4],
+                "created_at": room[5].isoformat() if room[5] else None
+            })
+
+        return {
+            "message": "Rooms loaded successfully",
+            "success": True,
+            "rooms": rooms_list
+        }
+
+    except Exception as error: 
+        print(error)
+
+        return {
+            "message": "Failed to load rooms",
+            "success": False
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
