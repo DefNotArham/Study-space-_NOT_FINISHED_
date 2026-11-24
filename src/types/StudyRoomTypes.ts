@@ -12,4 +12,6 @@ export type StudyRoomStore = {
 
   createRoomLoading: boolean;
   createRoomError: string | null;
+
+  createRoom: (title: string, description: string) => Promise<boolean>;
 };

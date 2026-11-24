@@ -42,7 +42,7 @@ def createRoom(data, authorization):
 
         invite_code = generate_invite_code()
 
-        with open("study-room/sql/createRoom/createRoom.sql", "r") as file:
+        with open("studyRoom/sql/createRoom/createRoom.sql", "r") as file:
             sql1 = file.read()
 
         cursor.execute(sql1, (user_id, data.name, data.description, invite_code))
@@ -50,7 +50,7 @@ def createRoom(data, authorization):
         room = cursor.fetchone()
         room_id = room[0]
 
-        with open("study-room/sql/createRoom/addMember.sql", "r") as file:
+        with open("studyRoom/sql/createRoom/addMember.sql", "r") as file:
             sql2 = file.read()
 
         cursor.execute(sql2, (room_id, user_id))
