@@ -12,6 +12,7 @@ import Logo from "../components/icons/logo";
 import LoFiBackground from "../components/background";
 import SidebarContents from "../components/auth/SideBarContents";
 import { ChecklistIcon, CloseIcon } from "../components/icons/icons";
+import { useStudyRoomStore } from "../stores/studyRoom.store";
 
 const inputClass =
   "w-full rounded-xl border border-[#3A2C22] bg-[#1B140F] px-3.5 py-2.5 text-[14px] text-[#F3E9DC] placeholder-[#6B5D50] outline-none transition-colors duration-200 focus:border-[#E3A567]/60 focus:ring-2 focus:ring-[#E3A567]/15";
@@ -44,6 +45,14 @@ const StudyRoomsPage = () => {
   const [description, setDescription] = useState("");
   const [inviteCode, setInviteCode] = useState("");
 
+  // Study room Store
+  const rooms = useStudyRoomStore((state) => state.rooms);
+  const createRoom = useStudyRoomStore((state) => state.createRoom);
+  const createRoomLoading = useStudyRoomStore(
+    (state) => state.createRoomLoading,
+  );
+  const createRoomError = useStudyRoomStore((state) => state.createRoomError);
+
   const closeCreateModal = () => {
     setCreateOpen(false);
     setRoomName("");
@@ -56,8 +65,16 @@ const StudyRoomsPage = () => {
   };
 
   // UI placeholders until backend functionality is connected
-  const handleCreateRoom = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const success = await createRoom(roomName, description);
+
+    if (success) {
+      setCreateOpen(false);
+      setRoomName("");
+      setDescription("");
+    }
   };
 
   const handleJoinRoom = (e: React.FormEvent<HTMLFormElement>) => {

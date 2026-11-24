@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import type { StudyRoomStore } from "../types/StudyRoomTypes";
 
-const useStudyRoomStore = create<StudyRoomStore>((set) => ({
+export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
   rooms: [],
 
   createRoomLoading: false,
   createRoomError: null,
 
-  createRoom: async (title, description) => {
-    set({ createRoomLoading: false, createRoomError: null });
+  createRoom: async (name, description) => {
+    set({ createRoomLoading: true, createRoomError: null });
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -27,7 +27,7 @@ const useStudyRoomStore = create<StudyRoomStore>((set) => ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ name, description }),
       });
 
       const data = await response.json();
@@ -42,7 +42,7 @@ const useStudyRoomStore = create<StudyRoomStore>((set) => ({
       }
 
       set((state) => ({
-        rooms: [data.room, state.rooms],
+        rooms: [data.room, ...state.rooms],
       }));
 
       return true;
