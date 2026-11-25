@@ -42,6 +42,9 @@ const StudyRoomsPage = () => {
   const [createOpen, setCreateOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
 
+  // Tab state
+  const [activeTab, setActiveTab] = useState<"hosted" | "joined">("hosted");
+
   // Form state
   const [roomName, setRoomName] = useState("");
   const [description, setDescription] = useState("");
@@ -55,18 +58,23 @@ const StudyRoomsPage = () => {
   const hostedRooms = rooms.filter(
     (room) => String(room.host_id) === String(user?.id),
   );
+
   const joinedRooms = rooms.filter(
     (room) => String(room.host_id) !== String(user?.id),
   );
 
   const createRoom = useStudyRoomStore((state) => state.createRoom);
+
   const createRoomLoading = useStudyRoomStore(
     (state) => state.createRoomLoading,
   );
+
   const createRoomError = useStudyRoomStore((state) => state.createRoomError);
 
   const loadRoom = useStudyRoomStore((state) => state.loadRoom);
+
   const loadRoomLoading = useStudyRoomStore((state) => state.loadRoomLoading);
+
   const loadRoomError = useStudyRoomStore((state) => state.loadRoomError);
 
   useEffect(() => {
@@ -75,6 +83,7 @@ const StudyRoomsPage = () => {
 
   const closeCreateModal = () => {
     if (createRoomLoading) return;
+
     setCreateOpen(false);
     setRoomName("");
     setDescription("");
@@ -107,6 +116,7 @@ const StudyRoomsPage = () => {
 
   const formatDate = (value: string) => {
     const date = new Date(value);
+
     if (Number.isNaN(date.getTime())) return "Date unavailable";
 
     return date.toLocaleDateString(undefined, {
@@ -140,6 +150,7 @@ const StudyRoomsPage = () => {
         {/* Mobile top bar */}
         <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-3 backdrop-blur-sm md:hidden">
           <Logo />
+
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
@@ -159,6 +170,7 @@ const StudyRoomsPage = () => {
               onClick={() => setMobileNavOpen(false)}
               className="absolute inset-0 bg-black/60"
             />
+
             <div className="absolute inset-y-0 left-0 w-72 border-r border-[#3A2C22]/70 bg-[#150F0B] px-4 py-6 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
               <div className="mb-2 flex justify-end">
                 <button
@@ -170,6 +182,7 @@ const StudyRoomsPage = () => {
                   <CloseIcon className="h-4 w-4" />
                 </button>
               </div>
+
               <SidebarContents />
             </div>
           </div>
@@ -187,6 +200,7 @@ const StudyRoomsPage = () => {
                 >
                   Study Rooms
                 </h1>
+
                 <p className="mt-1 text-[14px] text-[#8A7B6C]">
                   Study together, stay focused, and work with others.
                 </p>
@@ -201,6 +215,7 @@ const StudyRoomsPage = () => {
                   <HashIcon className="h-4 w-4" />
                   Join with code
                 </button>
+
                 <button
                   type="button"
                   onClick={() => setCreateOpen(true)}
@@ -217,20 +232,52 @@ const StudyRoomsPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[13px] text-[#8A7B6C]">Your study rooms</p>
+
                   <p className="mt-1 text-2xl font-semibold text-[#F3E9DC]">
                     {rooms.length}
                   </p>
                 </div>
+
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E3A567]/15 bg-[#2A1F17]">
                   <UsersIcon className="h-5 w-5 text-[#E3A567]" />
                 </div>
               </div>
             </Card>
 
+            {/* Room tabs */}
+            {!loadRoomLoading && !loadRoomError && (
+              <div className="mb-6 flex gap-2 rounded-xl border border-[#3A2C22]/70 bg-[#1D1611]/85 p-1.5">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("hosted")}
+                  className={`flex-1 cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    activeTab === "hosted"
+                      ? "bg-gradient-to-b from-[#E8B679] to-[#C97D4A] text-[#221407] shadow-md"
+                      : "text-[#B8A99A] hover:bg-[#2A1F17] hover:text-[#F3E9DC]"
+                  }`}
+                >
+                  Rooms you host ({hostedRooms.length})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("joined")}
+                  className={`flex-1 cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    activeTab === "joined"
+                      ? "bg-gradient-to-b from-[#E8B679] to-[#C97D4A] text-[#221407] shadow-md"
+                      : "text-[#B8A99A] hover:bg-[#2A1F17] hover:text-[#F3E9DC]"
+                  }`}
+                >
+                  Rooms you joined ({joinedRooms.length})
+                </button>
+              </div>
+            )}
+
             {/* Loading state */}
             {loadRoomLoading && (
               <Card className="flex min-h-[220px] flex-col items-center justify-center px-6 py-12 text-center">
                 <div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#6B5543] border-t-[#E3A567]" />
+
                 <p className="text-sm text-[#B8A99A]">
                   Loading your study rooms...
                 </p>
@@ -241,6 +288,7 @@ const StudyRoomsPage = () => {
             {!loadRoomLoading && loadRoomError && (
               <Card className="flex min-h-[220px] flex-col items-center justify-center px-6 py-12 text-center">
                 <p className="text-sm text-red-400">{loadRoomError}</p>
+
                 <button
                   type="button"
                   onClick={() => void loadRoom()}
@@ -252,25 +300,8 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Rooms you host */}
-            {!loadRoomLoading && !loadRoomError && (
+            {!loadRoomLoading && !loadRoomError && activeTab === "hosted" && (
               <div className="mb-8">
-                <div className="mb-4 flex items-center justify-between">
-                  <div>
-                    <h2
-                      className="text-lg italic tracking-tight text-[#F3E9DC]"
-                      style={{ fontFamily: "'Fraunces', serif" }}
-                    >
-                      Rooms you host
-                    </h2>
-                    <p className="mt-1 text-xs text-[#8A7B6C]">
-                      Rooms you created and manage.
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-[#E3A567]/20 bg-[#2A1F17] px-3 py-1 text-xs font-medium text-[#E3A567]">
-                    {hostedRooms.length}
-                  </span>
-                </div>
-
                 {hostedRooms.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {hostedRooms.map((room) => (
@@ -280,10 +311,12 @@ const StudyRoomsPage = () => {
                             <h3 className="truncate text-base font-semibold text-[#F3E9DC]">
                               {room.name}
                             </h3>
+
                             <p className="mt-1 text-xs text-[#8A7B6C]">
                               Created {formatDate(room.created_at)}
                             </p>
                           </div>
+
                           <span className="shrink-0 rounded-lg border border-[#E3A567]/20 bg-[#2A1F17] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#E3A567]">
                             Host
                           </span>
@@ -297,10 +330,12 @@ const StudyRoomsPage = () => {
                           <p className="text-[11px] font-medium uppercase tracking-wide text-[#8A7B6C]">
                             Invitation code
                           </p>
+
                           <div className="mt-1 flex items-center justify-between gap-2">
                             <code className="font-mono text-sm tracking-widest text-[#E3A567]">
                               {room.invite_code}
                             </code>
+
                             <button
                               type="button"
                               onClick={() => {
@@ -333,6 +368,7 @@ const StudyRoomsPage = () => {
                     <p className="text-sm text-[#B8A99A]">
                       You haven&apos;t created any rooms yet.
                     </p>
+
                     <button
                       type="button"
                       onClick={() => setCreateOpen(true)}
@@ -346,25 +382,8 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Rooms you joined */}
-            {!loadRoomLoading && !loadRoomError && (
-              <div>
-                <div className="mb-4 flex items-center justify-between">
-                  <div>
-                    <h2
-                      className="text-lg italic tracking-tight text-[#F3E9DC]"
-                      style={{ fontFamily: "'Fraunces', serif" }}
-                    >
-                      Rooms you joined
-                    </h2>
-                    <p className="mt-1 text-xs text-[#8A7B6C]">
-                      Other rooms you are a member of.
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-[#3A2C22] bg-[#1D1611] px-3 py-1 text-xs font-medium text-[#B8A99A]">
-                    {joinedRooms.length}
-                  </span>
-                </div>
-
+            {!loadRoomLoading && !loadRoomError && activeTab === "joined" && (
+              <div className="mb-8">
                 {joinedRooms.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {joinedRooms.map((room) => (
@@ -374,10 +393,12 @@ const StudyRoomsPage = () => {
                             <h3 className="truncate text-base font-semibold text-[#F3E9DC]">
                               {room.name}
                             </h3>
+
                             <p className="mt-1 text-xs text-[#8A7B6C]">
                               Created {formatDate(room.created_at)}
                             </p>
                           </div>
+
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2A1F17]">
                             <LockIcon className="h-4 w-4 text-[#B8A99A]" />
                           </span>
@@ -403,6 +424,7 @@ const StudyRoomsPage = () => {
                     <p className="text-sm text-[#B8A99A]">
                       You haven&apos;t joined any other rooms yet.
                     </p>
+
                     <button
                       type="button"
                       onClick={() => setJoinOpen(true)}
@@ -438,10 +460,12 @@ const StudyRoomsPage = () => {
                 >
                   Create a room
                 </h2>
+
                 <p className="mt-1 text-xs text-[#8A7B6C]">
                   Create a space for you and your friends.
                 </p>
               </div>
+
               <button
                 type="button"
                 onClick={closeCreateModal}
@@ -461,6 +485,7 @@ const StudyRoomsPage = () => {
                 >
                   Room name
                 </label>
+
                 <input
                   id="room-name"
                   value={roomName}
@@ -479,6 +504,7 @@ const StudyRoomsPage = () => {
                 >
                   Description <span className="text-[#6B5D50]">(optional)</span>
                 </label>
+
                 <textarea
                   id="room-description"
                   value={description}
@@ -494,10 +520,12 @@ const StudyRoomsPage = () => {
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2A1F17]">
                   <LockIcon className="h-4 w-4 text-[#E3A567]" />
                 </div>
+
                 <div className="flex-1">
                   <p className="text-[13px] font-medium text-[#F3E9DC]">
                     Private room
                   </p>
+
                   <p className="mt-1 text-[11px] leading-relaxed text-[#8A7B6C]">
                     Only people with your invitation code can join.
                   </p>
@@ -519,6 +547,7 @@ const StudyRoomsPage = () => {
                 >
                   Cancel
                 </button>
+
                 <button
                   type="submit"
                   disabled={!roomName.trim() || createRoomLoading}
@@ -552,10 +581,12 @@ const StudyRoomsPage = () => {
                 >
                   Join a room
                 </h2>
+
                 <p className="mt-1 text-xs text-[#8A7B6C]">
                   Enter an invitation code to join a study room.
                 </p>
               </div>
+
               <button
                 type="button"
                 onClick={closeJoinModal}
@@ -574,6 +605,7 @@ const StudyRoomsPage = () => {
                 >
                   Invitation code
                 </label>
+
                 <input
                   id="invite-code"
                   value={inviteCode}
