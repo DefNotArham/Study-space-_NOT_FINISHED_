@@ -343,7 +343,7 @@ const StudyRoomsPage = () => {
                                   room.invite_code,
                                 );
                               }}
-                              className="rounded-lg p-2 text-[#8A7B6C] transition-colors hover:bg-[#2A1F17] hover:text-[#F3E9DC]"
+                              className="rounded-lg p-2 text-[#8A7B6C] transition-colors hover:bg-[#2A1F17] hover:text-[#F3E9DC] cursor-pointer"
                               aria-label={`Copy invitation code for ${room.name}`}
                               title="Copy invitation code"
                             >
