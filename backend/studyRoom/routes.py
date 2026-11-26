@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header, HTTPException
-from .request_schemas import CreateRoomRequest, DeleteRoomRequest, JoinRoomRequest
-from .controllers import createRoom, loadRooms, deleteRoom, joinRoom
+from .request_schemas import CreateRoomRequest, DeleteRoomRequest, JoinRoomRequest, LeaveRoomRequest
+from .controllers import createRoom, loadRooms, deleteRoom, joinRoom, leaveRoom
 
 router = APIRouter()
 
@@ -22,3 +22,7 @@ def delete_room_route(data: DeleteRoomRequest, authorization: str | None = Heade
 @router.patch("/join-room")
 def join_room_route(data: JoinRoomRequest, authorization: str | None = Header(default=None)):
     return joinRoom(data, authorization)
+
+@router.patch("leave-room")
+def leave_room_route(data: LeaveRoomRequest, authorization: str | None = Header(default=None)):
+    return leaveRoom(data, authorization)

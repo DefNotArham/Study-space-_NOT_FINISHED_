@@ -9,3 +9,6 @@ class DeleteRoomRequest(BaseModel):
 
 class JoinRoomRequest(BaseModel):
     invite_code: str
+
+class LeaveRoomRequest(BaseModel):
+    room_id: int
