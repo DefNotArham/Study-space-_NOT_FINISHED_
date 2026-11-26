@@ -13,6 +13,12 @@ export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
   deleteRoomError: null,
   deleteRoomLoading: false,
 
+  joinRoomLoading: false,
+  joinRoomError: null,
+
+  leaveRoomLoading: false,
+  leaveRoomError: null,
+
   createRoom: async (name, description) => {
     set({ createRoomLoading: true, createRoomError: null });
 
@@ -163,5 +169,56 @@ export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
 
       return false;
     }
+  },
+
+  joinRoom: async (invite_code) => {
+    set({ joinRoomError: null, joinRoomLoading: true });
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      set({
+        joinRoomError: "Unable to find user token",
+        joinRoomLoading: false,
+      });
+
+      return false;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/room/join-room", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({ joinRoomError: data.message, joinRoomLoading: false });
+
+        return false;
+      }
+
+      set((state) => ({
+        rooms: state.rooms.some((room) => room.id === data.room.id)
+          ? state.rooms
+          : [data.room, ...state.rooms],
+
+        joinRoomLoading: false,
+      }));
+
+      return true;
+    } catch (error) {
+      set({ joinRoomError: "Something went wrong", joinRoomLoading: false });
+
+      return false;
+    }
+  },
+  leaveRoom: async () => {
+    try {
+    } catch (error) {}
   },
 }));
