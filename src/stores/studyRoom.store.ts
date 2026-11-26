@@ -218,7 +218,46 @@ export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
     }
   },
   leaveRoom: async () => {
+    set({ leaveRoomError: null, leaveRoomLoading: true });
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      set({
+        leaveRoomError: "Unable to find user token",
+        leaveRoomLoading: false,
+      });
+
+      return false;
+    }
+
     try {
-    } catch (error) {}
+      const response = await fetch("http://127.0.0.1:8000/room/delete-room", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({ leaveRoomError: data.message, leaveRoomLoading: false });
+
+        return false;
+      }
+
+      set((state) => ({
+        rooms: state.rooms.filter((room) => room.id !== data.room.id),
+        leaveRoomLoading: false,
+      }));
+
+      return true;
+    } catch (error) {
+      set({ leaveRoomError: "Something went wrong", leaveRoomLoading: false });
+
+      return false;
+    }
   },
 }));

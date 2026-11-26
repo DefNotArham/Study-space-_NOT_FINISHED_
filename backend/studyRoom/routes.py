@@ -23,6 +23,6 @@ def delete_room_route(data: DeleteRoomRequest, authorization: str | None = Heade
 def join_room_route(data: JoinRoomRequest, authorization: str | None = Header(default=None)):
     return joinRoom(data, authorization)
 
-@router.patch("leave-room")
+@router.delete("leave-room")
 def leave_room_route(data: LeaveRoomRequest, authorization: str | None = Header(default=None)):
     return leaveRoom(data, authorization)
