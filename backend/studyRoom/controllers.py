@@ -160,7 +160,7 @@ def loadRooms(authorization):
         if connection:
             connection.close()
 
-def deleteRoom(authorization, data):
+def deleteRoom(data, authorization):
     if not authorization or not authorization.startswith("Bearer "):
         return {
             "message": "Missing or invalid authorization header",
@@ -206,7 +206,7 @@ def deleteRoom(authorization, data):
 
         return {
             "message": "Deleted room successfully",
-            "success": False
+            "success": True
         }
 
     except Exception as error:
