@@ -271,6 +271,17 @@ def joinRoom(data, authorization):
                 "success": False
             }
 
+        with open("studyRoom/sql/joinRoom/checkMember.sql", "r") as file:
+            sql_check = file.read()
+
+        cursor.execute(sql_check, (room[0], user_id))
+
+        if cursor.fetchone():
+            return {
+                "message": "You are already a member of this room",
+                "success": False
+            }
+
         with open("studyRoom/sql/joinRoom/addMember.sql", "r") as file:
             sql2 = file.read()
 
