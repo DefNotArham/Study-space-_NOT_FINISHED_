@@ -29,5 +29,5 @@ export type StudyRoomStore = {
   loadRoom: () => Promise<boolean>;
   deleteRoom: (room_id: Number) => Promise<boolean>;
   joinRoom: (invite_code: string) => Promise<boolean>;
-  leaveRoom: (room_id: string) => Promise<boolean>;
+  leaveRoom: (room_id: number) => Promise<boolean>;
 };

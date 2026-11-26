@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   PlusIcon,
   UsersIcon,
@@ -11,10 +12,15 @@ import {
 } from "lucide-react";
 
 import Logo from "../components/icons/logo";
+
 import LoFiBackground from "../components/background";
+
 import SidebarContents from "../components/auth/SideBarContents";
+
 import { ChecklistIcon, CloseIcon } from "../components/icons/icons";
+
 import { useStudyRoomStore } from "../stores/studyRoom.store";
+
 import { useAuthStore } from "../stores/auth.store";
 
 const inputClass =
@@ -22,9 +28,11 @@ const inputClass =
 
 function Card({
   children,
+
   className = "",
 }: {
   children: React.ReactNode;
+
   className?: string;
 }) {
   return (
@@ -40,49 +48,80 @@ const StudyRoomsPage = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Modal state
+
   const [createOpen, setCreateOpen] = useState(false);
+
   const [joinOpen, setJoinOpen] = useState(false);
+
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [selectedRoom, setSelectedRoom] = useState<{
     id: number;
+
     name: string;
   } | null>(null);
 
   // Tab state
+
   const [activeTab, setActiveTab] = useState<"hosted" | "joined">("hosted");
 
   // Form state
+
   const [roomName, setRoomName] = useState("");
+
   const [description, setDescription] = useState("");
+
   const [inviteCode, setInviteCode] = useState("");
 
   // Study room store and authenticated user
+
   const rooms = useStudyRoomStore((state) => state.rooms);
+
   const user = useAuthStore((state) => state.user);
 
   // Separate rooms created by the current user from rooms they joined.
+
   const hostedRooms = rooms.filter(
     (room) => String(room.host_id) === String(user?.id),
   );
+
   const joinedRooms = rooms.filter(
     (room) => String(room.host_id) !== String(user?.id),
   );
 
   const createRoom = useStudyRoomStore((state) => state.createRoom);
+
   const createRoomLoading = useStudyRoomStore(
     (state) => state.createRoomLoading,
   );
+
   const createRoomError = useStudyRoomStore((state) => state.createRoomError);
 
   const loadRoom = useStudyRoomStore((state) => state.loadRoom);
+
   const loadRoomLoading = useStudyRoomStore((state) => state.loadRoomLoading);
+
   const loadRoomError = useStudyRoomStore((state) => state.loadRoomError);
 
   const deleteRoom = useStudyRoomStore((state) => state.deleteRoom);
+
   const deleteRoomLoading = useStudyRoomStore(
     (state) => state.deleteRoomLoading,
   );
+
   const deleteRoomError = useStudyRoomStore((state) => state.deleteRoomError);
+
+  const joinRoom = useStudyRoomStore((state) => state.joinRoom);
+
+  const joinRoomLoading = useStudyRoomStore((state) => state.joinRoomLoading);
+
+  const joinRoomError = useStudyRoomStore((state) => state.joinRoomError);
+
+  const leaveRoom = useStudyRoomStore((state) => state.leaveRoom);
+
+  const leaveRoomLoading = useStudyRoomStore((state) => state.leaveRoomLoading);
+
+  const leaveRoomError = useStudyRoomStore((state) => state.leaveRoomError);
 
   useEffect(() => {
     void loadRoom();
@@ -92,17 +131,21 @@ const StudyRoomsPage = () => {
     if (createRoomLoading) return;
 
     setCreateOpen(false);
+
     setRoomName("");
+
     setDescription("");
   };
 
   const closeJoinModal = () => {
     setJoinOpen(false);
+
     setInviteCode("");
   };
 
   const openDeleteModal = (roomId: number, roomName: string) => {
     setSelectedRoom({ id: roomId, name: roomName });
+
     setDeleteOpen(true);
   };
 
@@ -110,6 +153,7 @@ const StudyRoomsPage = () => {
     if (deleteRoomLoading) return;
 
     setDeleteOpen(false);
+
     setSelectedRoom(null);
   };
 
@@ -120,6 +164,7 @@ const StudyRoomsPage = () => {
 
     if (success) {
       setDeleteOpen(false);
+
       setSelectedRoom(null);
     }
   };
@@ -129,19 +174,33 @@ const StudyRoomsPage = () => {
 
     const success = await createRoom(
       roomName.trim(),
+
       description.trim() || null,
     );
 
     if (success) {
       setCreateOpen(false);
+
       setRoomName("");
+
       setDescription("");
     }
   };
 
-  // The join-room API action has not been added to the Zustand store yet.
-  const handleJoinRoom = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleJoinRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const success = await joinRoom(inviteCode.trim());
+
+    if (success) {
+      setJoinOpen(false);
+      setInviteCode("");
+      setActiveTab("joined");
+    }
+  };
+
+  const handleLeaveRoom = async (roomId: number) => {
+    await leaveRoom(roomId);
   };
 
   const formatDate = (value: string) => {
@@ -151,7 +210,9 @@ const StudyRoomsPage = () => {
 
     return date.toLocaleDateString(undefined, {
       month: "short",
+
       day: "numeric",
+
       year: "numeric",
     });
   };
@@ -162,22 +223,30 @@ const StudyRoomsPage = () => {
       style={{ fontFamily: "'Manrope', sans-serif" }}
     >
       <style>{`
+
         ::-webkit-scrollbar { width: 8px; }
+
         ::-webkit-scrollbar-track { background: #120C09; }
+
         ::-webkit-scrollbar-thumb { background: #6B5543; border-radius: 9999px; }
+
         ::-webkit-scrollbar-thumb:hover { background: #80654D; }
+
         * { scrollbar-width: thin; scrollbar-color: #6B5543 #120C09; }
+
       `}</style>
 
       <LoFiBackground />
 
       <div className="relative z-10 flex min-h-screen">
         {/* Desktop sidebar */}
+
         <aside className="fixed inset-y-0 hidden w-64 shrink-0 flex-col border-r border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-6 backdrop-blur-sm md:flex">
           <SidebarContents />
         </aside>
 
         {/* Mobile top bar */}
+
         <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-[#3A2C22]/70 bg-[#150F0B]/90 px-4 py-3 backdrop-blur-sm md:hidden">
           <Logo />
 
@@ -192,6 +261,7 @@ const StudyRoomsPage = () => {
         </header>
 
         {/* Mobile drawer */}
+
         {mobileNavOpen && (
           <div className="fixed inset-0 z-40 md:hidden">
             <button
@@ -219,9 +289,11 @@ const StudyRoomsPage = () => {
         )}
 
         {/* Main content */}
+
         <main className="min-w-0 flex-1 px-5 pb-16 pt-20 md:ml-64 md:px-10 md:pt-10">
           <div className="mx-auto max-w-3xl">
             {/* Header */}
+
             <div className="mb-8 flex animate-[ss-fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both] flex-wrap items-start justify-between gap-4">
               <div>
                 <h1
@@ -258,6 +330,7 @@ const StudyRoomsPage = () => {
             </div>
 
             {/* Room count */}
+
             <Card className="mb-6 p-5">
               <div className="flex items-center justify-between">
                 <div>
@@ -275,6 +348,7 @@ const StudyRoomsPage = () => {
             </Card>
 
             {/* Room tabs */}
+
             {!loadRoomLoading && !loadRoomError && (
               <div className="mb-6 flex gap-2 rounded-xl border border-[#3A2C22]/70 bg-[#1D1611]/85 p-1.5">
                 <button
@@ -304,6 +378,7 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Loading state */}
+
             {loadRoomLoading && (
               <Card className="flex min-h-[220px] flex-col items-center justify-center px-6 py-12 text-center">
                 <div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#6B5543] border-t-[#E3A567]" />
@@ -315,6 +390,7 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Loading error */}
+
             {!loadRoomLoading && loadRoomError && (
               <Card className="flex min-h-[220px] flex-col items-center justify-center px-6 py-12 text-center">
                 <p className="text-sm text-red-400">{loadRoomError}</p>
@@ -330,6 +406,7 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Rooms you host */}
+
             {!loadRoomLoading && !loadRoomError && activeTab === "hosted" && (
               <div className="mb-8">
                 {hostedRooms.length > 0 ? (
@@ -405,7 +482,7 @@ const StudyRoomsPage = () => {
                 ) : (
                   <Card className="px-5 py-7 text-center">
                     <p className="text-sm text-[#B8A99A]">
-                      You haven&apos;t created any rooms yet.
+                      You haven't created any rooms yet.
                     </p>
 
                     <button
@@ -427,8 +504,14 @@ const StudyRoomsPage = () => {
             )}
 
             {/* Rooms you joined */}
+
             {!loadRoomLoading && !loadRoomError && activeTab === "joined" && (
               <div className="mb-8">
+                {leaveRoomError && (
+                  <p role="alert" className="mb-3 text-sm text-red-400">
+                    {leaveRoomError}
+                  </p>
+                )}
                 {joinedRooms.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {joinedRooms.map((room) => (
@@ -461,13 +544,23 @@ const StudyRoomsPage = () => {
                           <DoorOpenIcon className="h-4 w-4" />
                           Enter room
                         </button>
+
+                        <button
+                          type="button"
+                          onClick={() => void handleLeaveRoom(room.id)}
+                          disabled={leaveRoomLoading}
+                          className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-[13px] font-semibold text-red-400 transition-all duration-200 hover:border-red-500/40 hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <DoorOpenIcon className="h-4 w-4" />
+                          {leaveRoomLoading ? "Leaving..." : "Leave room"}
+                        </button>
                       </Card>
                     ))}
                   </div>
                 ) : (
                   <Card className="px-5 py-7 text-center">
                     <p className="text-sm text-[#B8A99A]">
-                      You haven&apos;t joined any other rooms yet.
+                      You haven't joined any other rooms yet.
                     </p>
 
                     <button
@@ -486,6 +579,7 @@ const StudyRoomsPage = () => {
       </div>
 
       {/* Delete Room Confirmation Modal */}
+
       {deleteOpen && selectedRoom && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 py-8">
           <button
@@ -547,6 +641,7 @@ const StudyRoomsPage = () => {
       )}
 
       {/* Create Room Modal */}
+
       {createOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
           <button
@@ -660,6 +755,7 @@ const StudyRoomsPage = () => {
                   className="flex-1 cursor-pointer rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] shadow-[0_8px_20px_-6px_rgba(201,125,74,0.55)] transition-all duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   <PlusIcon className="mr-1 inline h-4 w-4" />
+
                   {createRoomLoading ? "Creating..." : "Create room"}
                 </button>
               </div>
@@ -669,6 +765,7 @@ const StudyRoomsPage = () => {
       )}
 
       {/* Join Room Modal */}
+
       {joinOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
           <button
@@ -723,20 +820,19 @@ const StudyRoomsPage = () => {
                 />
               </div>
 
-              <div className="rounded-xl border border-[#3A2C22]/70 bg-[#150F0B]/70 p-4">
-                <p className="text-xs leading-relaxed text-[#8A7B6C]">
-                  Joining rooms will be available once the join-room backend
-                  endpoint and Zustand action are implemented.
+              {joinRoomError && (
+                <p role="alert" className="text-sm text-red-400">
+                  {joinRoomError}
                 </p>
-              </div>
+              )}
 
               <button
                 type="submit"
-                disabled={!inviteCode.trim()}
-                className="mt-1 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] opacity-50"
+                disabled={!inviteCode.trim() || joinRoomLoading}
+                className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-[#E8B679] to-[#C97D4A] py-2.5 text-[14px] font-semibold text-[#221407] transition-all hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <DoorOpenIcon className="h-4 w-4" />
-                Join room (not connected yet)
+                {joinRoomLoading ? "Joining..." : "Join room"}
               </button>
             </form>
           </div>
