@@ -159,3 +159,70 @@ def loadRooms(authorization):
 
         if connection:
             connection.close()
+
+def deleteRoom(authorization, data):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload.get("user_id")
+
+    if not user_id:
+        return {
+            "message": "Invalid payload token",
+            "success": False
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("studyRoom/sql/deleteRoom.sql", "r") as file:
+            sql1 = file.read()
+
+        cursor.execute(sql1, (data.room_id, user_id))
+
+        if cursor.rowcount == 0:
+            return {
+                "message": "Room not found or you are not the host",
+                "success": False
+            }
+
+        connection.commit()
+
+        return {
+            "message": "Deleted room successfully",
+            "success": False
+        }
+
+    except Exception as error:
+        print(error)
+
+        if connection:
+            connection.rollback()
+
+        return {
+            "message": "Failed to delete room",
+            "success": False
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
