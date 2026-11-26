@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { StudyRoomStore } from "../types/StudyRoomTypes";
-import { Flag } from "lucide-react";
 
 export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
   rooms: [],
@@ -10,6 +9,9 @@ export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
 
   loadRoomLoading: false,
   loadRoomError: null,
+
+  deleteRoomError: null,
+  deleteRoomLoading: false,
 
   createRoom: async (name, description) => {
     set({ createRoomLoading: true, createRoomError: null });
@@ -104,6 +106,59 @@ export const useStudyRoomStore = create<StudyRoomStore>((set) => ({
       set({
         loadRoomError: "Something went wrong",
         loadRoomLoading: false,
+      });
+
+      return false;
+    }
+  },
+
+  deleteRoom: async (room_id) => {
+    set({ deleteRoomLoading: true, deleteRoomError: null });
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      set({
+        deleteRoomError: "Unable to find user token",
+        deleteRoomLoading: false,
+      });
+
+      return false;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/room/delete-room", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          room_id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        set({
+          deleteRoomError: "Unable to delete room",
+          deleteRoomLoading: false,
+        });
+
+        return false;
+      }
+
+      set((state) => ({
+        rooms: state.rooms.filter((room) => room.id !== room_id),
+        deleteRoomLoading: false,
+      }));
+
+      return true;
+    } catch (error) {
+      set({
+        deleteRoomError: "Something went wrong",
+        deleteRoomLoading: false,
       });
 
       return false;
