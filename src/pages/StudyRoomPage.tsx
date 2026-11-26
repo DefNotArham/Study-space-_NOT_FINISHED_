@@ -7,6 +7,7 @@ import {
   LockIcon,
   DoorOpenIcon,
   CopyIcon,
+  Trash2Icon,
 } from "lucide-react";
 
 import Logo from "../components/icons/logo";
@@ -41,6 +42,11 @@ const StudyRoomsPage = () => {
   // Modal state
   const [createOpen, setCreateOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   // Tab state
   const [activeTab, setActiveTab] = useState<"hosted" | "joined">("hosted");
@@ -58,24 +64,25 @@ const StudyRoomsPage = () => {
   const hostedRooms = rooms.filter(
     (room) => String(room.host_id) === String(user?.id),
   );
-
   const joinedRooms = rooms.filter(
     (room) => String(room.host_id) !== String(user?.id),
   );
 
   const createRoom = useStudyRoomStore((state) => state.createRoom);
-
   const createRoomLoading = useStudyRoomStore(
     (state) => state.createRoomLoading,
   );
-
   const createRoomError = useStudyRoomStore((state) => state.createRoomError);
 
   const loadRoom = useStudyRoomStore((state) => state.loadRoom);
-
   const loadRoomLoading = useStudyRoomStore((state) => state.loadRoomLoading);
-
   const loadRoomError = useStudyRoomStore((state) => state.loadRoomError);
+
+  const deleteRoom = useStudyRoomStore((state) => state.deleteRoom);
+  const deleteRoomLoading = useStudyRoomStore(
+    (state) => state.deleteRoomLoading,
+  );
+  const deleteRoomError = useStudyRoomStore((state) => state.deleteRoomError);
 
   useEffect(() => {
     void loadRoom();
@@ -92,6 +99,29 @@ const StudyRoomsPage = () => {
   const closeJoinModal = () => {
     setJoinOpen(false);
     setInviteCode("");
+  };
+
+  const openDeleteModal = (roomId: number, roomName: string) => {
+    setSelectedRoom({ id: roomId, name: roomName });
+    setDeleteOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleteRoomLoading) return;
+
+    setDeleteOpen(false);
+    setSelectedRoom(null);
+  };
+
+  const handleDeleteRoom = async () => {
+    if (!selectedRoom) return;
+
+    const success = await deleteRoom(selectedRoom.id);
+
+    if (success) {
+      setDeleteOpen(false);
+      setSelectedRoom(null);
+    }
   };
 
   const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -360,6 +390,15 @@ const StudyRoomsPage = () => {
                           <DoorOpenIcon className="h-4 w-4" />
                           Enter room
                         </button>
+
+                        <button
+                          type="button"
+                          onClick={() => openDeleteModal(room.id, room.name)}
+                          className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-[13px] font-semibold text-red-400 transition-all duration-200 hover:border-red-500/40 hover:bg-red-500/20"
+                        >
+                          <Trash2Icon className="h-4 w-4" />
+                          Delete room
+                        </button>
                       </Card>
                     ))}
                   </div>
@@ -377,6 +416,12 @@ const StudyRoomsPage = () => {
                       Create your first room
                     </button>
                   </Card>
+                )}
+
+                {deleteRoomError && (
+                  <p role="alert" className="mt-3 text-sm text-red-400">
+                    {deleteRoomError}
+                  </p>
                 )}
               </div>
             )}
@@ -439,6 +484,67 @@ const StudyRoomsPage = () => {
           </div>
         </main>
       </div>
+
+      {/* Delete Room Confirmation Modal */}
+      {deleteOpen && selectedRoom && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 py-8">
+          <button
+            type="button"
+            aria-label="Close delete confirmation"
+            onClick={closeDeleteModal}
+            disabled={deleteRoomLoading}
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+          />
+
+          <div className="relative w-full max-w-sm rounded-2xl border border-[#5A3028]/60 bg-[#1D1611] p-6 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.75)] animate-[ss-fade-up_0.25s_ease-out_both]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10">
+              <Trash2Icon className="h-5 w-5 text-red-400" />
+            </div>
+
+            <h2
+              className="mt-5 text-xl italic tracking-tight text-[#F3E9DC]"
+              style={{ fontFamily: "'Fraunces', serif" }}
+            >
+              Delete this room?
+            </h2>
+
+            <p className="mt-2 text-sm leading-relaxed text-[#B8A99A]">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-[#F3E9DC]">
+                {selectedRoom.name}
+              </span>
+              ? This will permanently remove the room and its membership
+              records. This action cannot be undone.
+            </p>
+
+            {deleteRoomError && (
+              <p role="alert" className="mt-4 text-sm text-red-400">
+                {deleteRoomError}
+              </p>
+            )}
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                disabled={deleteRoomLoading}
+                className="flex-1 cursor-pointer rounded-xl border border-[#3A2C22] bg-[#1B140F] py-2.5 text-sm font-medium text-[#B8A99A] transition-colors hover:bg-[#251A13] hover:text-[#F3E9DC] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void handleDeleteRoom()}
+                disabled={deleteRoomLoading}
+                className="flex-1 cursor-pointer rounded-xl border border-red-500/30 bg-red-500/15 py-2.5 text-sm font-semibold text-red-400 transition-all hover:border-red-500/50 hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleteRoomLoading ? "Deleting..." : "Delete room"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create Room Modal */}
       {createOpen && (
