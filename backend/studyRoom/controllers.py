@@ -227,7 +227,7 @@ def deleteRoom(data, authorization):
         if connection:
             connection.close()
 
-def joinRoom(authorization, data):
+def joinRoom(data, authorization):
     if not authorization or not authorization.startswith("Bearer "):
         return {
             "message": "Missing or invalid authorization header",
