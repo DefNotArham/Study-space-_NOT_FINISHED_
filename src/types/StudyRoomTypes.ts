@@ -19,7 +19,15 @@ export type StudyRoomStore = {
   deleteRoomLoading: boolean;
   deleteRoomError: string | null;
 
+  joinRoomLoading: boolean;
+  joinRoomError: string | null;
+
+  leaveRoomLoading: boolean;
+  leaveRoomError: string | null;
+
   createRoom: (name: string, description: string | null) => Promise<boolean>;
   loadRoom: () => Promise<boolean>;
   deleteRoom: (room_id: Number) => Promise<boolean>;
+  joinRoom: (invite_code: string) => Promise<boolean>;
+  leaveRoom: (room_id: string) => Promise<boolean>;
 };
