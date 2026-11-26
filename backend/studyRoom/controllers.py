@@ -308,3 +308,70 @@ def joinRoom(data, authorization):
 
         if connection:
             connection.close()
+
+def leaveRoom(data, authorization):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload.get("user_id")
+
+    if not user_id:
+        return {
+            "message": "Invalid payload token",
+            "success": False
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("studyRoom/sql/leaveRoom.sql", "r") as file:
+            sql = file.read()
+
+        cursor.execute(sql, (data.room_id, user_id))
+
+        if cursor.rowcount == 0:
+             return {
+                 "message": "You are not a member of this room",
+                 "success": False
+             }
+
+        connection.commit()
+
+        return {
+            "message": "Left room successfully",
+            "success": False
+        }
+
+    except Exception as error:
+        print(error)
+
+        if connection:
+            connection.rollback()
+
+        return {
+            "message": "Unable to leave this room", 
+            "success": True
+        }
+
+    finally: 
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
