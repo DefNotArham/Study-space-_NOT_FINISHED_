@@ -226,3 +226,85 @@ def deleteRoom(data, authorization):
 
         if connection:
             connection.close()
+
+def joinRoom(authorization, data):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {
+            "message": "Missing or invalid authorization header",
+            "success": False
+        }
+
+    token = authorization.removeprefix("Bearer ").strip()
+    payload = verify_token(token)
+
+    if not payload:
+        return {
+            "message": "Invalid or expired token",
+            "success": False
+        }
+
+    user_id = payload.get("user_id")
+
+    if not user_id: 
+        return {
+            "message": "Invalid payload token",
+            "success": False
+        }
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        with open("studyRoom/sql/joinRoom/findRoom.sql", "r") as file:
+            sql1 = file.read()
+
+        cursor.execute(sql1, (data.invite_code,))
+
+        room = cursor.fetchone()
+
+        if not room:
+            return {
+                "message": "No room found with that invite code",
+                "success": False
+            }
+
+        with open("studyRoom/sql/joinRoom/addMember.sql", "r") as file:
+            sql2 = file.read()
+
+        cursor.execute(sql2, (room[0], user_id,))
+
+        connection.commit()
+
+        return {
+            "message": "Joined room successfully",
+            "success": True,
+            "room": {
+                "id": room[0],
+                "host_id": room[1],
+                "name": room[2],
+                "description": room[3],
+                "invite_code": room[4],
+                "created_at": room[5].isoformat() if room[5] else None
+            }
+        }
+
+    except Exception as error:
+        print(error)
+
+        if connection: 
+            connection.rollback()
+
+        return {
+            "message": "Failed to join this room",
+            "success": False
+        }
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
